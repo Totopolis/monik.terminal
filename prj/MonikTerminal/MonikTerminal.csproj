@@ -6,13 +6,39 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\src\Bootstrap.cs" Link="Bootstrap.cs" />
     <Compile Include="..\..\src\Config.cs" Link="Config.cs" />
     <Compile Include="..\..\src\Entry.cs" Link="Entry.cs" />
+    <Compile Include="..\..\src\Enums\LevelType.cs" Link="Enums\LevelType.cs" />
+    <Compile Include="..\..\src\Enums\SeverityCutoffType.cs" Link="Enums\SeverityCutoffType.cs" />
+    <Compile Include="..\..\src\Enums\TopType.cs" Link="Enums\TopType.cs" />
+    <Compile Include="..\..\src\Interfaces\IConfig.cs" Link="Interfaces\IConfig.cs" />
+    <Compile Include="..\..\src\Interfaces\IMonikService.cs" Link="Interfaces\IMonikService.cs" />
+    <Compile Include="..\..\src\Interfaces\ISourcesCache.cs" Link="Interfaces\ISourcesCache.cs" />
+    <Compile Include="..\..\src\ModelsApi\EGroup.cs" Link="ModelsApi\EGroup.cs" />
+    <Compile Include="..\..\src\ModelsApi\EInstance.cs" Link="ModelsApi\EInstance.cs" />
+    <Compile Include="..\..\src\ModelsApi\ELogRequest.cs" Link="ModelsApi\ELogRequest.cs" />
+    <Compile Include="..\..\src\ModelsApi\ELog_.cs" Link="ModelsApi\ELog_.cs" />
+    <Compile Include="..\..\src\ModelsApi\ESource.cs" Link="ModelsApi\ESource.cs" />
+    <Compile Include="..\..\src\ModelsApp\Group.cs" Link="ModelsApp\Group.cs" />
+    <Compile Include="..\..\src\ModelsApp\Instance.cs" Link="ModelsApp\Instance.cs" />
+    <Compile Include="..\..\src\ModelsApp\LogItem.cs" Link="ModelsApp\LogItem.cs" />
+    <Compile Include="..\..\src\ModelsApp\Source.cs" Link="ModelsApp\Source.cs" />
+    <Compile Include="..\..\src\MonikService.cs" Link="MonikService.cs" />
+    <Compile Include="..\..\src\SourcesCache.cs" Link="SourcesCache.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.1" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Enums\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="ModelsApi\" />
+    <Folder Include="ModelsApp\" />
   </ItemGroup>
 
 </Project>
