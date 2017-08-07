@@ -8,6 +8,7 @@ using Autofac;
 using MonikTerminal.Interfaces;
 using MonikTerminal.ModelsApi;
 using System.Linq;
+using System.Text;
 
 namespace MonikTerminal
 {
@@ -15,6 +16,10 @@ namespace MonikTerminal
 	{
 		public static void Point(string[] args)
 		{
+			Console.ForegroundColor = ConsoleColor.White;
+			Console.BackgroundColor = ConsoleColor.Black;
+			Console.OutputEncoding = Encoding.UTF8;
+
 			// Program.exe <-g|--greeting|-$ <greeting>> [name <fullname>]
 			// [-?|-h|--help] [-u|--uppercase]
 			var app = new CommandLineApplication(throwOnUnexpectedArg: false);
@@ -31,7 +36,16 @@ namespace MonikTerminal
 
 				var service = container.Resolve<IMonikService>();
 				var cache = container.Resolve<ISourcesCache>();
-				cache.Reload().Wait();
+
+				try
+				{
+					cache.Reload().Wait();
+				}
+				catch(Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+					return -1;
+				}
 
 				Console.WriteLine();
 
@@ -48,33 +62,8 @@ namespace MonikTerminal
 
 				if (showLogs.HasValue())
 				{
-					var request = new ELogRequest()
-					{
-						LastID = null,
-						Top = 50,
-						Level = null,
-						SeverityCutoff = 30
-					};
-
-					while (true)
-					{
-						var task = service.GetLogs(request);
-						task.Wait();
-
-						Console.WriteLine("123");
-
-						ELog_[] response = task.Result;
-
-						if (response.Length > 0)
-							request.LastID = response.Max(x => x.ID);
-
-						foreach (var log in response)
-						{
-							Console.WriteLine(log.Body);
-						}
-
-						Task.Delay(5000);
-					}
+					var term = container.Resolve<ILogTerminal>();
+					term.Start();
 				}
 
 				return 0;

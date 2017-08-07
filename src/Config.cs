@@ -40,6 +40,11 @@ namespace MonikTerminal
 	public class Config : IConfig
 	{
 		public string ServerUrl { get => "http://url/"; set => throw new NotImplementedException(); }
+
+		public string TimeTemplate { get; set; } = "HH:mm:ss";
+		public int MaxSourceLen { get; set; } = 12;
+		public int MaxInstanceLen { get; set; } = 8;
+		public int RefreshPeriod { get; set; } = 5;
 	}
 
 }
