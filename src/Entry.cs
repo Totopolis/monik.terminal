@@ -16,7 +16,7 @@ namespace MonikTerminal
 	{
 		public static void Point(string[] args)
 		{
-			Console.ForegroundColor = ConsoleColor.White;
+			//Console.ForegroundColor = ConsoleColor.White;
 			Console.BackgroundColor = ConsoleColor.Black;
 			Console.OutputEncoding = Encoding.UTF8;
 
@@ -63,6 +63,12 @@ namespace MonikTerminal
 				if (showLogs.HasValue())
 				{
 					var term = container.Resolve<ILogTerminal>();
+					term.Start();
+				}
+
+				if (showKeepAlives.HasValue())
+				{
+					var term = container.Resolve<IKeepAliveTerminal>();
 					term.Start();
 				}
 

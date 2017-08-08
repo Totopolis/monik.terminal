@@ -50,6 +50,15 @@ namespace MonikTerminal
 			return result;
 		}
 
+		public async Task<EKeepAlive_[]> GetKeepAlives(EKeepAliveRequest aRequest)
+		{
+			var reqJson = JsonConvert.SerializeObject(aRequest);
+			var resJson = await PostJson("keepalive2", reqJson);
+
+			var result = JsonConvert.DeserializeObject<EKeepAlive_[]>(resJson);
+			return result;
+		}
+
 		private async Task<string> GetJson(string aMethod)
 		{
 			var client = new HttpClient();

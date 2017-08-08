@@ -1,3 +1,4 @@
+using MonikTerminal.Enums;
 using MonikTerminal.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -45,6 +46,10 @@ namespace MonikTerminal
 		public int MaxSourceLen { get; set; } = 12;
 		public int MaxInstanceLen { get; set; } = 8;
 		public int RefreshPeriod { get; set; } = 5;
+		public int KeepAliveWarnSeconds { get; set; } = 60;
+		public LevelType LevelFilter { get; set; } = LevelType.None;
+		public SeverityCutoffType SeverityCutoff { get; set; } = SeverityCutoffType.None;
+		public bool ShowLevelVerbose { get; set; } = true;
 	}
 
 }

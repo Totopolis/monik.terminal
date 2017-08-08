@@ -9,5 +9,6 @@ namespace MonikTerminal.Interfaces
 		Task<EInstance[]> GetInstances();
 		Task<EGroup[]> GetGroups();
 		Task<ELog_[]> GetLogs(ELogRequest aRequest);
+		Task<EKeepAlive_[]> GetKeepAlives(EKeepAliveRequest aRequest);
 	}
 }

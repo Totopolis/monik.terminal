@@ -18,6 +18,7 @@ namespace MonikTerminal
 			builder.RegisterType<SourcesCache>().As<ISourcesCache>().SingleInstance();
 
 			builder.RegisterType<LogTerminal>().As<ILogTerminal>().SingleInstance();
+			builder.RegisterType<KeepAliveTerminal>().As<IKeepAliveTerminal>().SingleInstance();
 
 			Container = builder.Build();
 			

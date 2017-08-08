@@ -13,12 +13,16 @@
     <Compile Include="..\..\src\Enums\SeverityCutoffType.cs" Link="Enums\SeverityCutoffType.cs" />
     <Compile Include="..\..\src\Enums\TopType.cs" Link="Enums\TopType.cs" />
     <Compile Include="..\..\src\Interfaces\IConfig.cs" Link="Interfaces\IConfig.cs" />
+    <Compile Include="..\..\src\Interfaces\IKeepAliveTerminal.cs" Link="Interfaces\IKeepAliveTerminal.cs" />
     <Compile Include="..\..\src\Interfaces\ILogTerminal.cs" Link="Interfaces\ILogTerminal.cs" />
     <Compile Include="..\..\src\Interfaces\IMonikService.cs" Link="Interfaces\IMonikService.cs" />
     <Compile Include="..\..\src\Interfaces\ISourcesCache.cs" Link="Interfaces\ISourcesCache.cs" />
+    <Compile Include="..\..\src\KeepAliveTerminal.cs" Link="KeepAliveTerminal.cs" />
     <Compile Include="..\..\src\LogTerminal.cs" Link="LogTerminal.cs" />
     <Compile Include="..\..\src\ModelsApi\EGroup.cs" Link="ModelsApi\EGroup.cs" />
     <Compile Include="..\..\src\ModelsApi\EInstance.cs" Link="ModelsApi\EInstance.cs" />
+    <Compile Include="..\..\src\ModelsApi\EKeepAliveRequest.cs" Link="ModelsApi\EKeepAliveRequest.cs" />
+    <Compile Include="..\..\src\ModelsApi\EKeepAlive_.cs" Link="ModelsApi\EKeepAlive_.cs" />
     <Compile Include="..\..\src\ModelsApi\ELogRequest.cs" Link="ModelsApi\ELogRequest.cs" />
     <Compile Include="..\..\src\ModelsApi\ELog_.cs" Link="ModelsApi\ELog_.cs" />
     <Compile Include="..\..\src\ModelsApi\ESource.cs" Link="ModelsApi\ESource.cs" />
