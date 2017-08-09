@@ -1,0 +1,13 @@
+{
+    "ServerUrl": "http://url/",
+	"TimeTemplate": "HH:mm:ss",
+	"MaxSourceLen": 12,
+    "MaxInstanceLen": 8,
+    "RefreshPeriod": 5,
+	"KeepAliveWarnSeconds": 60,
+	"LevelFilter": "none",
+	"SeverityCutoff": "info",
+	"ShowLevelVerbose": true,
+    "Top": 20,
+    "Mode" : "stream"
+}

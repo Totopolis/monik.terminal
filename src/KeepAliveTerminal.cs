@@ -76,8 +76,11 @@ namespace MonikTerminal
 					Console.WriteLine("INTERNAL ERROR: " + ex.Message);
 				}
 
+				if (_config.Mode == TerminalMode.Single)
+					return;
+
 				Task.Delay(_config.RefreshPeriod * 1000).Wait();
-			}
+			}//while true
 		}
 
 	} //end of class

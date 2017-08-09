@@ -34,11 +34,13 @@ namespace MonikTerminal
 			{
 				var container = Bootstrap.Init();
 
+				var cfg = container.Resolve<IConfig>();
 				var service = container.Resolve<IMonikService>();
 				var cache = container.Resolve<ISourcesCache>();
 
 				try
 				{
+					cfg.Load("monik.json");
 					cache.Reload().Wait();
 				}
 				catch(Exception ex)

@@ -13,7 +13,7 @@ namespace MonikTerminal
 
 			//builder.RegisterType<OakApplication>().As<IOakApplication>().SingleInstance();
 			//builder.RegisterType<Shell>().SingleInstance();
-			builder.RegisterType<Config>().As<IConfig>();
+			builder.RegisterType<Config>().As<IConfig>().SingleInstance();
 			builder.RegisterType<MonikService>().As<IMonikService>();
 			builder.RegisterType<SourcesCache>().As<ISourcesCache>().SingleInstance();
 

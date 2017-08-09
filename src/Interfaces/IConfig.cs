@@ -4,6 +4,8 @@ namespace MonikTerminal.Interfaces
 {
 	public interface IConfig
 	{
+		void Load(string aFileName);
+
 		string ServerUrl { get; set; }
 
 		string TimeTemplate { get; set; }
@@ -18,5 +20,9 @@ namespace MonikTerminal.Interfaces
 		SeverityCutoffType SeverityCutoff { get; set; }
 
 		bool ShowLevelVerbose { get; set; }
+
+		int Top { get; set; }
+
+		TerminalMode Mode { get; set; }
 	}
 }

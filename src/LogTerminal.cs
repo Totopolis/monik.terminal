@@ -23,53 +23,13 @@ namespace MonikTerminal
 			_sourceCache = aSourceCache;
 		}
 
-		private string LevelTypeToString(LevelType aType)
-		{
-			switch (aType)
-			{
-				case LevelType.None:
-					return "non";
-				case LevelType.System:
-					return "sys";
-				case LevelType.Application:
-					return "app";
-				case LevelType.Logic:
-					return "lgc";
-				case LevelType.Security:
-					return "sec";
-				default:
-					throw new NotImplementedException();
-			}
-		}
-
-		private string SeverityToString(SeverityCutoffType aSeverity)
-		{
-			switch (aSeverity)
-			{
-				case SeverityCutoffType.None:
-					return "non";
-				case SeverityCutoffType.Verbose:
-					return "ver";
-				case SeverityCutoffType.Info:
-					return "inf";
-				case SeverityCutoffType.Warning:
-					return "wrn";
-				case SeverityCutoffType.Error:
-					return "err";
-				case SeverityCutoffType.Fatal:
-					return "fat";
-				default:
-					throw new NotImplementedException();
-			}
-		}
-
 		public void Start()
 		{
 			var request = new ELogRequest()
 			{
 				LastID = null,
-				Top = 50,
-				Level = null,
+				Top = _config.Top,
+				Level = _config.LevelFilter == LevelType.None ? null : (byte?)_config.LevelFilter,
 				SeverityCutoff = _config.SeverityCutoff == SeverityCutoffType.None ? null : (byte?)_config.SeverityCutoff
 			};
 
@@ -100,11 +60,13 @@ namespace MonikTerminal
 
 						var sourceLen = _config.MaxSourceLen + _config.MaxInstanceLen + 1;
 
+						// TODO: support ShowLevelVerbose
+
 						var str = string.Format("{0} {1,-" + sourceLen + "} {2} {3} {4}",
 							whenStr,
 							srcName + ":" + instName,
-							LevelTypeToString(level),
-							SeverityToString(sev),
+							Converter.LevelTypeToString(level),
+							Converter.SeverityToString(sev),
 							bodyStr);
 
 						str = str.Length <= Console.WindowWidth ? str : str.Substring(0, Console.WindowWidth - 1);
@@ -121,6 +83,9 @@ namespace MonikTerminal
 				{
 					Console.WriteLine("INTERNAL ERROR: " + ex.Message);
 				}
+
+				if (_config.Mode == TerminalMode.Single)
+					return;
 
 				Task.Delay(_config.RefreshPeriod * 1000).Wait();
 			}

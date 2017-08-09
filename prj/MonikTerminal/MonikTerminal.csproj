@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="..\..\src\Bootstrap.cs" Link="Bootstrap.cs" />
     <Compile Include="..\..\src\Config.cs" Link="Config.cs" />
+    <Compile Include="..\..\src\Converter.cs" Link="Converter.cs" />
     <Compile Include="..\..\src\Entry.cs" Link="Entry.cs" />
     <Compile Include="..\..\src\Enums\LevelType.cs" Link="Enums\LevelType.cs" />
     <Compile Include="..\..\src\Enums\SeverityCutoffType.cs" Link="Enums\SeverityCutoffType.cs" />
