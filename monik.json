@@ -1,6 +1,6 @@
 {
     "ServerUrl": "http://url/",
-	"TimeTemplate": "HH:mm:ss",
+	"TimeTemplate": "HH:mm",
 	"MaxSourceLen": 12,
     "MaxInstanceLen": 8,
     "RefreshPeriod": 5,

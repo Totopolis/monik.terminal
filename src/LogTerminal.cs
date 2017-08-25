@@ -62,9 +62,10 @@ namespace MonikTerminal
 
 						// TODO: support ShowLevelVerbose
 
-						var str = string.Format("{0} {1,-" + sourceLen + "} {2} {3} {4}",
+						var str = string.Format("{0} {1,-" + _config.MaxSourceLen + "} {2,-" + _config.MaxInstanceLen + "} {3} {4} | {5}",
 							whenStr,
-							srcName + ":" + instName,
+							srcName,
+							instName,
 							Converter.LevelTypeToString(level),
 							Converter.SeverityToString(sev),
 							bodyStr);

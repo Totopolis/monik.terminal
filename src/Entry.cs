@@ -41,9 +41,10 @@ namespace MonikTerminal
 				try
 				{
 					cfg.Load("monik.json");
+
 					cache.Reload().Wait();
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					Console.WriteLine(ex.Message);
 					return -1;

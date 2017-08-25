@@ -64,7 +64,9 @@ namespace MonikTerminal
 						}
 						else
 						{
+							Console.BackgroundColor = ConsoleColor.DarkGreen;
 							Console.Write("[ OK  ]");
+							Console.BackgroundColor = ConsoleColor.Black;
 						}
 
 						Console.WriteLine(" | " + whenStr);
