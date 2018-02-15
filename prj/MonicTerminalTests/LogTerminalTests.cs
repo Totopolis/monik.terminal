@@ -31,7 +31,7 @@ namespace MonicTerminalTests
             var logs = new ELog_[0];
             var rez = terminal.GroupDuplicatingLogs(logs);
 
-            Assert.That(rez.Length == 0);
+            Assert.That(!rez.Any());
         }
 
         [Test]
@@ -191,7 +191,7 @@ namespace MonicTerminalTests
                     Severity = (byte)SeverityCutoffType.Error
                 },
             };
-            var rez = terminal.GroupDuplicatingLogs(logs);
+            var rez = terminal.GroupDuplicatingLogs(logs).ToArray();
             
             Assert.That(rez, Is.EquivalentTo(new[] { logs[0], logs[2], logs[3] }));
             Assert.That(rez[0].Doubled);

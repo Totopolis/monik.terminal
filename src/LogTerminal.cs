@@ -44,14 +44,14 @@ namespace MonikTerminal
 
                     if (response.Length > 0)
                         request.LastID = response.Max(x => x.ID);
-                    response = GroupDuplicatingLogs(response).OrderBy(l=>l.Created.ToLocalTime()).ToArray();
+                    response = GroupDuplicatingLogs(response).OrderBy(l=>l.ID).ToArray();
 
                     foreach (var log in response)
                     {
                         var instance = _sourceCache.GetInstance(log.InstanceID);
 
-                        var instName = instance.Name.Length <= _config.MaxInstanceLen ? instance.Name : instance.Name.Substring(0, _config.MaxInstanceLen - 2) + "..";
-                        var srcName = instance.Source.Name.Length <= _config.MaxSourceLen ? instance.Source.Name : instance.Source.Name.Substring(0, _config.MaxSourceLen - 2) + "..";
+                        var instName = instance       .Name.Length <= _config.MaxInstanceLen ? instance.Name        : instance        .Name.Substring(0, _config.MaxInstanceLen - 2) + "..";
+                        var srcName  = instance.Source.Name.Length <= _config.MaxSourceLen   ? instance.Source.Name : instance.Source .Name.Substring(0, _config.MaxSourceLen   - 2) + "..";
 
                         var whenStr = log.Created.ToLocalTime().ToString(log.Doubled ? _config.DoubledTimeTemplate : _config.TimeTemplate);
 
