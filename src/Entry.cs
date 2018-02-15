@@ -26,10 +26,10 @@ namespace MonikTerminal
 			app.Name = "monik";
 			var help = app.HelpOption("-? | -h | --help");
 
-			var showSources    = app.Option("-u | --show-sources",   "Display source list",         CommandOptionType.NoValue);
-			var showLogs       = app.Option("-g | --show-logs",      "Display logs",                CommandOptionType.NoValue);
-			var showKeepAlives = app.Option("-k | --show-keepalive", "Display keep-alive statuses", CommandOptionType.NoValue);
-			var customSettings = app.Option("-c | --custom-settings",   "Use custom settings",         CommandOptionType.SingleValue);
+			var showSources    = app.Option("-u | --show-sources",    "Display source list",         CommandOptionType.NoValue);
+			var showLogs       = app.Option("-g | --show-logs",       "Display logs",                CommandOptionType.NoValue);
+			var showKeepAlives = app.Option("-k | --show-keepalive",  "Display keep-alive statuses", CommandOptionType.NoValue);
+			var customSettings = app.Option("-c | --custom-settings", "Use custom settings",         CommandOptionType.SingleValue);
 
 			app.OnExecute(() =>
 			{
@@ -79,7 +79,7 @@ namespace MonikTerminal
 
 				if (showKeepAlives.HasValue())
 				{
-					var term = container.Resolve<IKeepAliveTerminal>();
+				    var term = container.Resolve<IKeepAliveTerminal>();
 					term.Start();
 				}
 

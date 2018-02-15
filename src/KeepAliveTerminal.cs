@@ -27,7 +27,9 @@ namespace MonikTerminal
 		{
 			var request = new EKeepAliveRequest();
 
-			while (true)
+		    Console.Title = nameof(MonikTerminal) + ": " + nameof(KeepAliveTerminal);
+                
+            while (true)
 			{
 				try
 				{

@@ -33,7 +33,10 @@ namespace MonikTerminal
 				SeverityCutoff = _config.SeverityCutoff == SeverityCutoffType.None ? null : (byte?)_config.SeverityCutoff
 			};
 
-			while (true)
+		    Console.Title =
+		        $"{nameof(MonikTerminal)}: {nameof(LogTerminal)}{(_config.LevelFilter != LevelType.None ? $"({Enum.GetName(typeof(LevelType), _config.LevelFilter)})" : "")}";
+
+            while (true)
 			{
 				try
                 {
