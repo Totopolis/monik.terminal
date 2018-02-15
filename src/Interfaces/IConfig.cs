@@ -9,6 +9,7 @@ namespace MonikTerminal.Interfaces
 		string ServerUrl { get; set; }
 
 		string TimeTemplate { get; set; }
+		string DoubledTimeTemplate { get; set; }
 
 		int MaxSourceLen { get; set; }
 		int MaxInstanceLen { get; set; }

@@ -26,9 +26,10 @@ namespace MonikTerminal
 			app.Name = "monik";
 			var help = app.HelpOption("-? | -h | --help");
 
-			var showSources = app.Option("-u | --show-sources", "Display source list", CommandOptionType.NoValue);
-			var showLogs = app.Option("-g | --show-logs", "Display logs", CommandOptionType.NoValue);
+			var showSources    = app.Option("-u | --show-sources",   "Display source list",         CommandOptionType.NoValue);
+			var showLogs       = app.Option("-g | --show-logs",      "Display logs",                CommandOptionType.NoValue);
 			var showKeepAlives = app.Option("-k | --show-keepalive", "Display keep-alive statuses", CommandOptionType.NoValue);
+			var customSettings = app.Option("-c | --custom-settings",   "Use custom settings",         CommandOptionType.SingleValue);
 
 			app.OnExecute(() =>
 			{
@@ -38,9 +39,16 @@ namespace MonikTerminal
 				var service = container.Resolve<IMonikService>();
 				var cache = container.Resolve<ISourcesCache>();
 
+			    var settingsPath = "monik.json";
+
+                if (customSettings.HasValue())
+                {
+                    settingsPath = customSettings.Value();
+                }
+
 				try
 				{
-					cfg.Load("monik.json");
+					cfg.Load(settingsPath);
 
 					cache.Reload().Wait();
 				}
@@ -79,6 +87,8 @@ namespace MonikTerminal
 			});
 
 			app.Execute(args);
+
+		    Console.ReadKey(true);
 		}
 	}
 }

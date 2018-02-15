@@ -11,33 +11,33 @@ using System.Threading.Tasks;
 
 namespace MonikTerminal
 {
-	public class MSource
-	{
-		public int iD { get; set; }
-		public string name { get; set; }
-		public string description { get; set; }
-	}
+	//public class MSource
+	//{
+	//	public int iD { get; set; }
+	//	public string name { get; set; }
+	//	public string description { get; set; }
+	//}
 
-	public class MInstance
-	{
-		public int ID { get; set; }
-		public string Name { get; set; }
-		public int SourceID { get; set; }
+	//public class MInstance
+	//{
+	//	public int ID { get; set; }
+	//	public string Name { get; set; }
+	//	public int SourceID { get; set; }
 
-		public MSource Source { get; set; }
-		public MGroup Grorup { get; set; }
-	}
+	//	public MSource Source { get; set; }
+	//	public MGroup Grorup { get; set; }
+	//}
 
-	public class MGroup
-	{
-		public short ID { get; set; }
-		public string Name { get; set; }
-		public bool IsDefault { get; set; }
+	//public class MGroup
+	//{
+	//	public short ID { get; set; }
+	//	public string Name { get; set; }
+	//	public bool IsDefault { get; set; }
 
-		public int[] Instances { get; set; }
+	//	public int[] Instances { get; set; }
 
-		public List<MInstance> InstanceList { get; set; }
-	}
+	//	public List<MInstance> InstanceList { get; set; }
+	//}
 
 	public enum TerminalMode
 	{
@@ -49,20 +49,21 @@ namespace MonikTerminal
 	{
 		public string ServerUrl { get; set; } = "http://url/";
 
-		public string TimeTemplate { get; set; } = "HH:mm:ss";
-		public int MaxSourceLen { get; set; } = 12;
-		public int MaxInstanceLen { get; set; } = 8;
-		public int RefreshPeriod { get; set; } = 5;
-		public int KeepAliveWarnSeconds { get; set; } = 60;
-		public LevelType LevelFilter { get; set; } = LevelType.None;
-		public SeverityCutoffType SeverityCutoff { get; set; } = SeverityCutoffType.None;
-		public bool ShowLevelVerbose { get; set; } = true;
-		public int Top { get; set; } = 25;
-		public TerminalMode Mode { get; set; } = TerminalMode.Stream;
+		public string             TimeTemplate         { get; set; } = "HH:mm";
+	    public string             DoubledTimeTemplate  { get; set; } = "HH:**";
+        public int                MaxSourceLen         { get; set; } = 12;
+		public int                MaxInstanceLen       { get; set; } = 8;
+		public int                RefreshPeriod        { get; set; } = 5;
+		public int                KeepAliveWarnSeconds { get; set; } = 60;
+		public LevelType          LevelFilter          { get; set; } = LevelType.None;
+		public SeverityCutoffType SeverityCutoff       { get; set; } = SeverityCutoffType.None;
+		public bool               ShowLevelVerbose     { get; set; } = true;
+		public int                Top                  { get; set; } = 25;
+		public TerminalMode       Mode                 { get; set; } = TerminalMode.Stream;
 
 		public void Load(string aFileName)
 		{
-			string json = File.ReadAllText(@"monik.json");
+			string json = File.ReadAllText(aFileName);
 
 			var jobj = JObject.Parse(json);
 			IDictionary<string, JToken> dic = jobj;
@@ -72,6 +73,9 @@ namespace MonikTerminal
 
 			if (dic.ContainsKey("TimeTemplate"))
 				TimeTemplate = (string)dic["TimeTemplate"];
+
+			if (dic.ContainsKey("DoubledTimeTemplate"))
+			    DoubledTimeTemplate = (string)dic["DoubledTimeTemplate"];
 
 			if (dic.ContainsKey("MaxSourceLen"))
 				MaxSourceLen = (int)dic["MaxSourceLen"];

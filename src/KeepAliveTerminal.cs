@@ -43,8 +43,8 @@ namespace MonikTerminal
 					{
 						var instance = _sourceCache.GetInstance(ka.InstanceID);
 
-						var instName = instance.Name.Length <= _config.MaxInstanceLen ? instance.Name : instance.Name.Substring(0, _config.MaxInstanceLen);
-						var srcName = instance.Source.Name.Length <= _config.MaxSourceLen ? instance.Source.Name : instance.Source.Name.Substring(0, _config.MaxSourceLen);
+						var instName = instance.Name.Length <= _config.MaxInstanceLen ? instance.Name : instance.Name.Substring(0, _config.MaxInstanceLen-2)+"..";
+						var srcName = instance.Source.Name.Length <= _config.MaxSourceLen ? instance.Source.Name : instance.Source.Name.Substring(0, _config.MaxSourceLen-2)+"..";
 
 						var whenStr = ka.Created.ToLocalTime().ToString(_config.TimeTemplate);
 
