@@ -44,7 +44,7 @@ namespace MonikTerminal
 
                     if (response.Length > 0)
                         request.LastID = response.Max(x => x.ID);
-                    response = GroupDuplicatingLogs(response);
+                    response = GroupDuplicatingLogs(response).OrderBy(l=>l.Created.ToLocalTime()).ToArray();
 
                     foreach (var log in response)
                     {
@@ -53,9 +53,8 @@ namespace MonikTerminal
                         var instName = instance.Name.Length <= _config.MaxInstanceLen ? instance.Name : instance.Name.Substring(0, _config.MaxInstanceLen - 2) + "..";
                         var srcName = instance.Source.Name.Length <= _config.MaxSourceLen ? instance.Source.Name : instance.Source.Name.Substring(0, _config.MaxSourceLen - 2) + "..";
 
-                        var whenStr = log.Created.ToLocalTime().ToString(_config.TimeTemplate);
-                        if (log.Doubled)
-                            whenStr = log.Created.ToLocalTime().ToString(_config.DoubledTimeTemplate);
+                        var whenStr = log.Created.ToLocalTime().ToString(log.Doubled ? _config.DoubledTimeTemplate : _config.TimeTemplate);
+
                         var bodyStr = log.Body.Replace(Environment.NewLine, "");
 
                         var sev = (SeverityCutoffType)log.Severity;
@@ -95,9 +94,9 @@ namespace MonikTerminal
 			}
 		}
 
-	    public ELog_[] GroupDuplicatingLogs(ELog_[] response)
+	    public IEnumerable<ELog_> GroupDuplicatingLogs(ELog_[] response)
         {
-            response = response?.GroupBy(r => new { r.InstanceID, r.Body, r.Severity, r.Level }).SelectMany(g =>
+            var result = response?.GroupBy(r => new { r.InstanceID, r.Body, r.Severity, r.Level }).SelectMany(g =>
             {
                 var min = g.Min(r => r.Created);
                 var firstIn5Sec = g.GroupBy(r =>
@@ -116,8 +115,8 @@ namespace MonikTerminal
                     }).ToArray();
 
                 return firstIn5Sec;
-            }).ToArray();
-            return response;
+            });
+            return result;
         }
     } //end of class
 }
