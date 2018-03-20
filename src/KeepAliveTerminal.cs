@@ -37,9 +37,10 @@ namespace MonikTerminal
 					task.Wait();
 
 					EKeepAlive_[] response = task.Result;
-					response = response.
-					    GroupBy(x => _sourceCache.GetInstance(x.InstanceID).Name).OrderBy(g=>g.Key).
-					    SelectMany(g=>g.OrderBy(x=> _sourceCache.GetInstance(x.InstanceID).Source.Name)).ToArray();
+				    response = response
+				        .OrderBy(x => _sourceCache.GetInstance(x.InstanceID).Name)
+				        .ThenBy(x => _sourceCache.GetInstance(x.InstanceID).Source.Name)
+				        .ToArray();
 
 					Console.Clear();
 

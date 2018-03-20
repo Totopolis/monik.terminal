@@ -13,6 +13,7 @@ namespace MonikTerminal.Interfaces
 
 		int MaxSourceLen { get; set; }
 		int MaxInstanceLen { get; set; }
+		int MaxMetricName { get; set; }
 
 		int RefreshPeriod { get; set; }
 		int KeepAliveWarnSeconds { get; set; }

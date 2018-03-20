@@ -19,6 +19,7 @@ namespace MonikTerminal
 
 			builder.RegisterType<LogTerminal>().As<ILogTerminal>().SingleInstance();
 			builder.RegisterType<KeepAliveTerminal>().As<IKeepAliveTerminal>().SingleInstance();
+			builder.RegisterType<MetricTerminal>().As<IMetricTerminal>().SingleInstance();
 
 			Container = builder.Build();
 			

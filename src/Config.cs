@@ -53,6 +53,7 @@ namespace MonikTerminal
 	    public string             DoubledTimeTemplate  { get; set; } = "HH:**";
         public int                MaxSourceLen         { get; set; } = 12;
 		public int                MaxInstanceLen       { get; set; } = 8;
+		public int                MaxMetricName        { get; set; } = 12;
 		public int                RefreshPeriod        { get; set; } = 5;
 		public int                KeepAliveWarnSeconds { get; set; } = 60;
 		public LevelType          LevelFilter          { get; set; } = LevelType.None;
@@ -82,6 +83,9 @@ namespace MonikTerminal
 
 			if (dic.ContainsKey("MaxInstanceLen"))
 				MaxInstanceLen = (int)dic["MaxInstanceLen"];
+
+			if (dic.ContainsKey("MaxMetricName"))
+			    MaxMetricName = (int)dic["MaxMetricName"];
 
 			if (dic.ContainsKey("RefreshPeriod"))
 				RefreshPeriod = (int)dic["RefreshPeriod"];

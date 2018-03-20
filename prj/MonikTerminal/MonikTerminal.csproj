@@ -16,10 +16,12 @@
     <Compile Include="..\..\src\Interfaces\IConfig.cs" Link="Interfaces\IConfig.cs" />
     <Compile Include="..\..\src\Interfaces\IKeepAliveTerminal.cs" Link="Interfaces\IKeepAliveTerminal.cs" />
     <Compile Include="..\..\src\Interfaces\ILogTerminal.cs" Link="Interfaces\ILogTerminal.cs" />
+    <Compile Include="..\..\src\Interfaces\IMetricTerminal.cs" Link="Interfaces\IMetricTerminal.cs" />
     <Compile Include="..\..\src\Interfaces\IMonikService.cs" Link="Interfaces\IMonikService.cs" />
     <Compile Include="..\..\src\Interfaces\ISourcesCache.cs" Link="Interfaces\ISourcesCache.cs" />
     <Compile Include="..\..\src\KeepAliveTerminal.cs" Link="KeepAliveTerminal.cs" />
     <Compile Include="..\..\src\LogTerminal.cs" Link="LogTerminal.cs" />
+    <Compile Include="..\..\src\MetricTerminal.cs" Link="MetricTerminal.cs" />
     <Compile Include="..\..\src\ModelsApi\EGroup.cs" Link="ModelsApi\EGroup.cs" />
     <Compile Include="..\..\src\ModelsApi\EInstance.cs" Link="ModelsApi\EInstance.cs" />
     <Compile Include="..\..\src\ModelsApi\EKeepAliveRequest.cs" Link="ModelsApi\EKeepAliveRequest.cs" />
@@ -44,8 +46,6 @@
   <ItemGroup>
     <Folder Include="Enums\" />
     <Folder Include="Interfaces\" />
-    <Folder Include="ModelsApi\" />
-    <Folder Include="ModelsApp\" />
   </ItemGroup>
 
 </Project>

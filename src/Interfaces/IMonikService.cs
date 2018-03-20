@@ -10,5 +10,7 @@ namespace MonikTerminal.Interfaces
 		Task<EGroup[]> GetGroups();
 		Task<ELog_[]> GetLogs(ELogRequest aRequest);
 		Task<EKeepAlive_[]> GetKeepAlives(EKeepAliveRequest aRequest);
+	    Task<EMetric_[]> GetMetrics();
+	    Task<EMetricDescription_[]> GetMetricDescriptions();
 	}
 }

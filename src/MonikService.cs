@@ -59,7 +59,21 @@ namespace MonikTerminal
 			return result;
 		}
 
-		private async Task<string> GetJson(string aMethod)
+	    public async Task<EMetric_[]> GetMetrics()
+	    {
+	        var json = await GetJson("currentMetrics");
+	        var result = JsonConvert.DeserializeObject<EMetric_[]>(json);
+	        return result;
+        }
+
+	    public async Task<EMetricDescription_[]> GetMetricDescriptions()
+	    {
+	        var json = await GetJson("metricDescriptions");
+	        var result = JsonConvert.DeserializeObject<EMetricDescription_[]>(json);
+	        return result;
+        }
+
+	    private async Task<string> GetJson(string aMethod)
 		{
 			var client = new HttpClient();
 			client.Timeout = TimeSpan.FromSeconds(5);
