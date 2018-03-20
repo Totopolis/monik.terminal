@@ -59,7 +59,7 @@ namespace MonikTerminal
 			return result;
 		}
 
-	    public async Task<EMetric_[]> GetMetrics()
+	    public async Task<EMetric_[]> GetCurrentMetrics()
 	    {
 	        var json = await GetJson("currentMetrics");
 	        var result = JsonConvert.DeserializeObject<EMetric_[]>(json);
@@ -73,7 +73,17 @@ namespace MonikTerminal
 	        return result;
         }
 
-	    private async Task<string> GetJson(string aMethod)
+	    public async Task<EMetric_[]> GetHistoryMetrics(EMetricHistoryRequest metricHistoryRequest)
+	    {
+	        var reqJson = JsonConvert.SerializeObject(metricHistoryRequest);
+	        var resJson = await PostJson("metricHistory", reqJson);
+
+	        var result = JsonConvert.DeserializeObject<EMetric_[]>(resJson);
+	        return result;
+        }
+
+
+        private async Task<string> GetJson(string aMethod)
 		{
 			var client = new HttpClient();
 			client.Timeout = TimeSpan.FromSeconds(5);

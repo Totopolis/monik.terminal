@@ -9,5 +9,4 @@ namespace MonikTerminal.ModelsApi
         public long     MetricId { get; set; }
         public long     Value    { get; set; }
     }
-
 }
