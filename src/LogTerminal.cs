@@ -87,7 +87,7 @@ namespace MonikTerminal
                 }
                 catch (Exception ex)
 				{
-					Console.WriteLine($"{DateTime.Now.TimeOfDay.ToString(_config.TimeTemplate)} INTERNAL ERROR: {ex.Message}");
+					Console.WriteLine($"{DateTime.Now.ToString(_config.TimeTemplate)} INTERNAL ERROR: {ex.Message}");
 				}
 
 				if (_config.Mode == TerminalMode.Single)
