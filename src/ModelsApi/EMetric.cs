@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonikTerminal.Enums;
+using System;
 
 namespace MonikTerminal.ModelsApi
 {
@@ -7,7 +8,7 @@ namespace MonikTerminal.ModelsApi
         public int ID { get; set; }
         public string Name { get; set; }
         public int InstanceID { get; set; }
-        public int Aggregation { get; set; }
+        public AggregationType Aggregation { get; set; }
 
         public long RangeHeadID { get; set; }
         public long RangeTailID { get; set; }
