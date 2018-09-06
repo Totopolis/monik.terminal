@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Microsoft.Extensions.CommandLineUtils;
 using Autofac;
+using Microsoft.Extensions.CommandLineUtils;
 using MonikTerminal.Interfaces;
-using MonikTerminal.ModelsApi;
+using System;
 using System.Linq;
 using System.Text;
 
 namespace MonikTerminal
 {
-	public class Entry
+    public class Entry
 	{
 		public static void Point(string[] args)
 		{
@@ -29,7 +24,8 @@ namespace MonikTerminal
 			var showSources    = app.Option("-u | --show-sources",    "Display source list",         CommandOptionType.NoValue);
 			var showLogs       = app.Option("-g | --show-logs",       "Display logs",                CommandOptionType.NoValue);
 			var showKeepAlives = app.Option("-k | --show-keepalive",  "Display keep-alive statuses", CommandOptionType.NoValue);
-			var showMetrics    = app.Option("-m | --show-metrics",    "Display metrics Values",      CommandOptionType.SingleValue);
+            var listMetrics    = app.Option("-M | --list-metrics",    "Display all metrics",         CommandOptionType.NoValue);
+            var showMetrics    = app.Option("-m | --show-metrics",    "Display metrics Values",      CommandOptionType.SingleValue);
 			var customSettings = app.Option("-c | --custom-settings", "Use custom settings",         CommandOptionType.SingleValue);
 
 			app.OnExecute(() =>
@@ -89,6 +85,24 @@ namespace MonikTerminal
 				    var term = container.Resolve<IMetricTerminal>();
 					term.Start(showMetrics.Value());
 				}
+
+			    if (listMetrics.HasValue())
+			    {
+			        var (maxSource, maxName) = cache.Metrics.Aggregate((maxSource: 0, maxName: 0), (a, b) =>
+			        {
+			            a.maxSource = Math.Max(a.maxSource, b.Instance.Source.Name.Length + b.Instance.Name.Length + 1);
+			            a.maxName = Math.Max(a.maxName, b.Name.Length);
+			            return a;
+			        });
+			        var data = cache.Metrics.OrderBy(m => m.ID);
+                    foreach (var metric in data)
+			        {
+                        Console.WriteLine($"{{0}}\t{{1,-{maxName}}} {{2,-{maxSource}}} {{3}}",
+                            metric.ID, metric.Name,
+                            metric.Instance.Source.Name + "." + metric.Instance.Name,
+                            metric.Aggregation);
+			        }
+			    }
 
 				return 0;
 			});
