@@ -13,12 +13,6 @@ namespace MonikTerminal
         Single
     }
 
-    public enum MetricTerminalMode
-    {
-        Current,
-        TimeWindow,
-    }
-
     public class Config : IConfig
     {
         public string ServerUrl { get; set; } = "http://url/";
@@ -27,7 +21,6 @@ namespace MonikTerminal
         public string             DoubledTimeTemplate      { get; set; } = "HH:**";
         public int                MaxSourceLen             { get; set; } = 12;
         public int                MaxInstanceLen           { get; set; } = 8;
-        public int                MaxMetricName            { get; set; } = 12;
         public int                RefreshPeriod            { get; set; } = 5;
         public int                KeepAliveWarnSeconds     { get; set; } = 60;
         public LevelType          LevelFilter              { get; set; } = LevelType.None;
@@ -35,8 +28,6 @@ namespace MonikTerminal
         public bool               ShowLevelVerbose         { get; set; } = true;
         public int                Top                      { get; set; } = 25;
         public TerminalMode       Mode                     { get; set; } = TerminalMode.Stream;
-        public MetricTerminalMode MetricTerminalMode       { get; set; } = MetricTerminalMode.Current;
-        public int                MetricAggWindow5MinWidth { get; set; } = 6; //for half an hour TimeWindow
 
         public void Load(string aFileName)
         {
@@ -59,9 +50,6 @@ namespace MonikTerminal
 
             if (dic.ContainsKey("MaxInstanceLen"))
                 MaxInstanceLen = (int) dic["MaxInstanceLen"];
-
-            if (dic.ContainsKey("MaxMetricName"))
-                MaxMetricName = (int) dic["MaxMetricName"];
 
             if (dic.ContainsKey("RefreshPeriod"))
                 RefreshPeriod = (int) dic["RefreshPeriod"];
@@ -86,12 +74,6 @@ namespace MonikTerminal
                 string md = (string) dic["Mode"];
                 Mode = md == "single" ? TerminalMode.Single : TerminalMode.Stream;
             }
-
-            if (dic.ContainsKey("MetricTerminalMode"))
-                MetricTerminalMode = Enum.Parse<MetricTerminalMode>((string) dic["MetricTerminalMode"]);
-            
-            if (dic.ContainsKey("MetricAggWindow5MinWidth"))
-                MetricAggWindow5MinWidth = (int)dic["MetricAggWindow5MinWidth"];
 
             Console.WriteLine("Config loaded");
         }

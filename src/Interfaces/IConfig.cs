@@ -11,7 +11,6 @@ namespace MonikTerminal.Interfaces
         string             DoubledTimeTemplate      { get; set; }
         int                MaxSourceLen             { get; set; }
         int                MaxInstanceLen           { get; set; }
-        int                MaxMetricName            { get; set; }
         int                RefreshPeriod            { get; set; }
         int                KeepAliveWarnSeconds     { get; set; }
         LevelType          LevelFilter              { get; set; }
@@ -19,7 +18,5 @@ namespace MonikTerminal.Interfaces
         bool               ShowLevelVerbose         { get; set; }
         int                Top                      { get; set; }
         TerminalMode       Mode                     { get; set; }
-        MetricTerminalMode MetricTerminalMode       { get; set; }
-        int                MetricAggWindow5MinWidth { get; set; }
     }
 }

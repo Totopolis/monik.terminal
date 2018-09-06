@@ -2,6 +2,6 @@ namespace MonikTerminal.Interfaces
 {
 	public interface IMetricTerminal
     {
-		void Start();
+		void Start(string configFileName);
 	}
 }

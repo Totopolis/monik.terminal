@@ -13,6 +13,7 @@ namespace MonikTerminal
 		private List<Group> _groups;
 		private List<Source> _sources;
 		private Dictionary<int, Instance> _instances;
+	    private List<Metric> _metrics;
 
 		private readonly Source _unknownSource;
 		private readonly Instance _unknownInstance;
@@ -33,7 +34,10 @@ namespace MonikTerminal
 			var instances = await _service.GetInstances();
 			Console.WriteLine("Instances downloaded");
 
-			var groups = await _service.GetGroups();
+		    var metrics = await _service.GetMetrics();
+		    Console.WriteLine("Metrics are downloaded");
+
+            var groups = await _service.GetGroups();
 			Console.WriteLine("Groups downloaded");
 
 			_sources = sources.Select(x => new Source
@@ -57,6 +61,14 @@ namespace MonikTerminal
 				_instances.Add(instance.ID, instance);
 			}
 
+		    _metrics = metrics.Select(x => new Metric
+		    {
+		        ID = x.ID,
+		        Name = x.Name,
+		        Aggregation = x.Aggregation,
+		        Instance = GetInstance(x.InstanceID)
+		    }).ToList();
+
 			_groups = new List<Group>();
 			foreach (var it in groups)
 			{
@@ -79,6 +91,8 @@ namespace MonikTerminal
 		public Source[] Sources => _sources.ToArray();
 
 		public Instance[] Instances => _instances.Values.ToArray();
+
+	    public Metric[] Metrics => _metrics.ToArray();
 
 		public Instance GetInstance(int aInstanceId)
 		{

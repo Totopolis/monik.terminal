@@ -21,6 +21,7 @@
     <Compile Include="..\..\src\Interfaces\ISourcesCache.cs" Link="Interfaces\ISourcesCache.cs" />
     <Compile Include="..\..\src\KeepAliveTerminal.cs" Link="KeepAliveTerminal.cs" />
     <Compile Include="..\..\src\LogTerminal.cs" Link="LogTerminal.cs" />
+    <Compile Include="..\..\src\MetricConfig.cs" Link="MetricConfig.cs" />
     <Compile Include="..\..\src\MetricTerminal.cs" Link="MetricTerminal.cs" />
     <Compile Include="..\..\src\ModelsApi\EGroup.cs" Link="ModelsApi\EGroup.cs" />
     <Compile Include="..\..\src\ModelsApi\EInstance.cs" Link="ModelsApi\EInstance.cs" />
@@ -28,10 +29,13 @@
     <Compile Include="..\..\src\ModelsApi\EKeepAlive_.cs" Link="ModelsApi\EKeepAlive_.cs" />
     <Compile Include="..\..\src\ModelsApi\ELogRequest.cs" Link="ModelsApi\ELogRequest.cs" />
     <Compile Include="..\..\src\ModelsApi\ELog_.cs" Link="ModelsApi\ELog_.cs" />
+    <Compile Include="..\..\src\ModelsApi\EMetric.cs" Link="ModelsApi\EMetric.cs" />
+    <Compile Include="..\..\src\ModelsApi\EMetricWindow.cs" Link="ModelsApi\EMetricWindow.cs" />
     <Compile Include="..\..\src\ModelsApi\ESource.cs" Link="ModelsApi\ESource.cs" />
     <Compile Include="..\..\src\ModelsApp\Group.cs" Link="ModelsApp\Group.cs" />
     <Compile Include="..\..\src\ModelsApp\Instance.cs" Link="ModelsApp\Instance.cs" />
     <Compile Include="..\..\src\ModelsApp\LogItem.cs" Link="ModelsApp\LogItem.cs" />
+    <Compile Include="..\..\src\ModelsApp\Metric.cs" Link="ModelsApp\Metric.cs" />
     <Compile Include="..\..\src\ModelsApp\Source.cs" Link="ModelsApp\Source.cs" />
     <Compile Include="..\..\src\MonikService.cs" Link="MonikService.cs" />
     <Compile Include="..\..\src\SourcesCache.cs" Link="SourcesCache.cs" />
@@ -46,6 +50,8 @@
   <ItemGroup>
     <Folder Include="Enums\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="ModelsApi\" />
+    <Folder Include="ModelsApp\" />
   </ItemGroup>
 
 </Project>

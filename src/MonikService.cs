@@ -59,28 +59,19 @@ namespace MonikTerminal
 			return result;
 		}
 
-	    public async Task<EMetric_[]> GetCurrentMetrics()
+	    public async Task<EMetricWindow[]> GetMetricsWindow()
 	    {
-	        var json = await GetJson("currentMetrics");
-	        var result = JsonConvert.DeserializeObject<EMetric_[]>(json);
+	        var json = await GetJson("metrics/windows");
+	        var result = JsonConvert.DeserializeObject<EMetricWindow[]>(json);
 	        return result;
         }
 
-	    public async Task<EMetricDescription_[]> GetMetricDescriptions()
+	    public async Task<EMetric[]> GetMetrics()
 	    {
-	        var json = await GetJson("metricDescriptions");
-	        var result = JsonConvert.DeserializeObject<EMetricDescription_[]>(json);
+	        var json = await GetJson("metrics");
+	        var result = JsonConvert.DeserializeObject<EMetric[]>(json);
 	        return result;
-        }
-
-	    public async Task<EMetric_[]> GetHistoryMetrics(EMetricHistoryRequest metricHistoryRequest)
-	    {
-	        var reqJson = JsonConvert.SerializeObject(metricHistoryRequest);
-	        var resJson = await PostJson("metricHistory", reqJson);
-
-	        var result = JsonConvert.DeserializeObject<EMetric_[]>(resJson);
-	        return result;
-        }
+	    }
 
 
         private async Task<string> GetJson(string aMethod)

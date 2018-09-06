@@ -8,6 +8,7 @@ namespace MonikTerminal.Interfaces
 		Group[] Groups { get; }
 		Source[] Sources { get; }
 		Instance[] Instances { get; }
+        Metric[] Metrics { get; }
 
 		Instance GetInstance(int aInstanceId);
 

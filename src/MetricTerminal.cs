@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MonikTerminal.Interfaces;
+using Newtonsoft.Json;
+using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using MonikTerminal.Interfaces;
-using MonikTerminal.ModelsApi;
 
 namespace MonikTerminal
 {
@@ -20,89 +20,72 @@ namespace MonikTerminal
             _sourceCache = aSourceCache;
         }
 
-        public void Start()
+        public void Start(string configFileName)
         {
+            var json = File.ReadAllText(configFileName);
+            var metricConfig = JsonConvert.DeserializeObject<MetricConfig>(json);
+
+            Console.Clear();
             Console.Title =
-                $"{nameof(MonikTerminal)}: {nameof(MetricTerminal)}({_config.MetricTerminalMode} mode{(_config.MetricTerminalMode == MetricTerminalMode.TimeWindow ? $", {_config.MetricAggWindow5MinWidth * 5} min" : "")})";
+                $"{nameof(MonikTerminal)}: {nameof(MetricTerminal)}";
 
             while (true)
             {
                 try
                 {
-                    EMetric_[] response;
-                    Dictionary<long, EMetricDescription_> metricDescriptions;
+                    var windows = _service.GetMetricsWindow().Result;
+                    var metrics =
+                        from metric in _sourceCache.Metrics
+                        join config in metricConfig.Metrics on metric.ID equals config.MetricId
+                        join window in windows on metric.ID equals window.MetricId
+                        select new {metric, window, config};
 
-                    if (_config.MetricTerminalMode == MetricTerminalMode.Current)
+                    Console.SetCursorPosition(0, 0);
+
+                    foreach (var data in metrics)
                     {
-                        response           = _service.GetCurrentMetrics().Result;
-                        metricDescriptions = _service.GetMetricDescriptions().Result.ToDictionary(md => md.Id);
+                        var metric = data.metric;
+                        var instance = metric.Instance;
 
+                        var instName = instance.Name.Length <= _config.MaxInstanceLen ? instance.Name : instance.Name.Substring(0, _config.MaxInstanceLen - 2) + "..";
+                        var srcName = instance.Source.Name.Length <= _config.MaxSourceLen ? instance.Source.Name : instance.Source.Name.Substring(0, _config.MaxSourceLen - 2) + "..";
+                        var metName = metric.Name.Length <= metricConfig.MaxMetricLen ? metric.Name : metric.Name.Substring(0, metricConfig.MaxMetricLen - 2) + "..";
+
+                        var str = string.Format($"{{0,-{_config.MaxSourceLen}}} {{1,-{_config.MaxInstanceLen}}} {{2, -{metricConfig.MaxMetricLen}}} | ",
+                            srcName,
+                            instName,
+                            metName);
+
+                        Console.Write(str);
+
+                        var value = data.window.Value;
+                        foreach (var boundary in data.config.Areas)
+                        {
+                            if (boundary.Range.Length != 2)
+                                throw new ArgumentException("Wrong Range format");
+
+                            var a = boundary.Range[0];
+                            var b = boundary.Range[1];
+
+                            if ((!a.HasValue || value >= a.Value) &&
+                                (!b.HasValue || value < b.Value))
+                            {
+                                Console.BackgroundColor =
+                                    !string.IsNullOrEmpty(boundary.Color)
+                                        ? Enum.Parse<ConsoleColor>(boundary.Color)
+                                        : ConsoleColor.Black;
+
+                                var valString = value.ToString(data.config.ValueFormat ?? metricConfig.DefaultValueFormat);
+                                valString = valString.Length <= metricConfig.MaxMetricValueLen ? valString : valString.Substring(valString.Length - metricConfig.MaxMetricValueLen);
+                                Console.Write($"{{0,{metricConfig.MaxMetricValueLen}}}", valString);
+
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                break;
+                            }
+                        }
+
+                        Console.WriteLine();
                     }
-                    else
-                    {
-                        metricDescriptions = _service.GetMetricDescriptions().Result.ToDictionary(md => md.Id);
-
-                        response = metricDescriptions.Select(md =>
-                                                      {
-                                                          EMetric_ rez;
-                                                          var      tmp = _service.GetHistoryMetrics(new EMetricHistoryRequest() {MetricId = md.Key, Count = _config.MetricAggWindow5MinWidth}).Result;
-
-                                                          if (md.Value.Type == MetricType.Accumulator)
-                                                          {
-                                                              rez = new EMetric_
-                                                              {
-                                                                  Value    = tmp.Sum(v => v.Value),
-                                                                  Created  = tmp.Max(v => v.Created),
-                                                                  MetricId = md.Key
-                                                              };
-                                                          }
-                                                          else
-                                                          {
-                                                              rez = new EMetric_
-                                                              {
-                                                                  Value    = tmp.Length > 0 ? tmp.Sum(v => v.Value) / tmp.Length : 0,
-                                                                  Created  = tmp.Max(v => v.Created),
-                                                                  MetricId = md.Key
-                                                              };
-                                                          }
-
-                                                          return rez;
-                                                      })
-                                                     .ToArray();
-                    }
-
-                        response = response
-                                  .OrderBy(x => _sourceCache.GetInstance(metricDescriptions[x.MetricId].InstanceId).Name)
-                                  .ThenBy(x => _sourceCache.GetInstance(metricDescriptions[x.MetricId].InstanceId).Source.Name)
-                                  .ThenBy(x => metricDescriptions[x.MetricId].Name)
-                                  .ToArray();
-
-                    Console.Clear();
-
-                    foreach (var x in response)
-                    {
-                        var instance = _sourceCache.GetInstance(metricDescriptions[x.MetricId].InstanceId);
-
-                        var instName   = instance.Name;
-                        var srcName    = instance.Source.Name;
-                        var metricName = metricDescriptions[x.MetricId].Name;
-
-                        instName = instName.Length <= _config.MaxInstanceLen ? string.Format($"{{0,-{_config.MaxInstanceLen}}}", instName) : instName.Substring(0, _config.MaxInstanceLen - 2) + "..";
-                        srcName  = srcName.Length  <= _config.MaxSourceLen   ? string.Format($"{{0,-{_config.MaxSourceLen}}}",    srcName) : srcName .Substring(0, _config.MaxSourceLen   - 2) + "..";
-
-                        metricName = metricName.Length <= _config.MaxMetricName
-                            ? string.Format($"{{0,-{_config.MaxMetricName}}}", metricName)
-                            : metricName.Substring(0, _config.MaxMetricName - 2) + "..";
-                        
-                        //var str = string.Format($"{{0,-{_config.MaxSourceLen}}} {{1,-{_config.MaxInstanceLen}}} {{2,-{_config.MaxMetricName}}}",
-                        //    srcName,
-                        //    instName,
-                        //    metricName);
-
-                        var valueStr = string.Format("{0, 5}", x.Value);
-
-                        Console.WriteLine($"{srcName} {instName} {metricName} | {valueStr}");
-                    } //foreach ka
                 }
                 catch (Exception ex)
                 {
