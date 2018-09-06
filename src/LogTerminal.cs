@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using MonikTerminal.Enums;
 using MonikTerminal.Interfaces;
-using MonikTerminal.ModelsApp;
-using System.Threading.Tasks;
-using System;
 using MonikTerminal.ModelsApi;
-using System.Text;
-using MonikTerminal.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MonikTerminal
 {
@@ -53,8 +51,8 @@ namespace MonikTerminal
                     {
                         var instance = _sourceCache.GetInstance(log.InstanceID);
 
-                        var instName = instance       .Name.Length <= _config.MaxInstanceLen ? instance.Name        : instance        .Name.Substring(0, _config.MaxInstanceLen - 2) + "..";
-                        var srcName  = instance.Source.Name.Length <= _config.MaxSourceLen   ? instance.Source.Name : instance.Source .Name.Substring(0, _config.MaxSourceLen   - 2) + "..";
+                        var instName = Converter.Truncate(instance.Name, _config.MaxInstanceLen);
+                        var srcName  = Converter.Truncate(instance.Source.Name, _config.MaxSourceLen);
 
                         var whenStr = log.Created.ToLocalTime().ToString(log.Doubled ? _config.DoubledTimeTemplate : _config.TimeTemplate);
 

@@ -68,5 +68,10 @@ namespace MonikTerminal
                    aStr == "err" || aStr == "error"   ? SeverityCutoffType.Error :
                    aStr == "fat" || aStr == "fatal"   ? SeverityCutoffType.Fatal : SeverityCutoffType.None;
         }
+
+        public static string Truncate(string value, int maxLen, string dots = "..")
+        {
+            return value.Length <= maxLen ? value : value.Substring(0, maxLen - dots.Length) + dots;
+        }
     } //end of class
 }
