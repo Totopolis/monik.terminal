@@ -1,7 +1,8 @@
 {
   "MaxMetricLen": 8,
   "MaxMetricValueLen": 8,
-  "DefaultValueFormat": "F",
+  "MaxAggregationTypeLen": 3,
+  "DefaultValueFormat": "0.#",
   "Metrics": [
     {
       "MetricId": 1,

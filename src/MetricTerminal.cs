@@ -13,6 +13,8 @@ namespace MonikTerminal
         private readonly IConfig       _config;
         private readonly ISourcesCache _sourceCache;
 
+        private int _windowWidth;
+
         public MetricTerminal(IMonikService aService, IConfig aConfig, ISourcesCache aSourceCache)
         {
             _service     = aService;
@@ -35,26 +37,40 @@ namespace MonikTerminal
                 {
                     var windows = _service.GetMetricsWindow().Result;
                     var metrics =
-                        from metric in _sourceCache.Metrics
-                        join config in metricConfig.Metrics on metric.ID equals config.MetricId
+                        from config in metricConfig.Metrics
+                        join metric in _sourceCache.Metrics on config.MetricId equals metric.ID
                         join window in windows on metric.ID equals window.MetricId
                         select new {metric, window, config};
 
-                    Console.SetCursorPosition(0, 0);
+                    if (_windowWidth != Console.WindowWidth)
+                    {
+                        _windowWidth = Console.WindowWidth;
+                        Console.Clear();
+                    }
+                    else
+                        Console.SetCursorPosition(0, 0);
+
+                    var maxSourceInstanceLen = _windowWidth - 1 -
+                                               (metricConfig.MaxMetricLen +
+                                                metricConfig.MaxAggregationTypeLen +
+                                                metricConfig.MaxMetricValueLen +
+                                                4);
 
                     foreach (var data in metrics)
                     {
                         var metric = data.metric;
                         var instance = metric.Instance;
 
-                        var instName = Converter.Truncate(instance.Name, _config.MaxInstanceLen);
-                        var srcName = Converter.Truncate(instance.Source.Name, _config.MaxSourceLen);
+                        var siName = Converter.Truncate($"{instance.Source.Name}.{instance.Name}", maxSourceInstanceLen);
                         var metName = Converter.Truncate(metric.Name, metricConfig.MaxMetricLen);
+                        var aggType = Converter.Truncate(metric.Aggregation.ToString(),
+                            metricConfig.MaxAggregationTypeLen, "");
 
-                        var str = string.Format($"{{0,-{_config.MaxSourceLen}}} {{1,-{_config.MaxInstanceLen}}} {{2, -{metricConfig.MaxMetricLen}}} | ",
-                            srcName,
-                            instName,
-                            metName);
+                        var str = string.Format(
+                                $"{{0,-{maxSourceInstanceLen}}} " +
+                                $"{{1,-{metricConfig.MaxMetricLen}}} " +
+                                $"|{{2,-{metricConfig.MaxAggregationTypeLen}}}|",
+                            siName, metName, aggType);
 
                         Console.Write(str);
 

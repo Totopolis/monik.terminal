@@ -17,6 +17,7 @@ namespace MonikTerminal
     {
         public int MaxMetricLen { get; set; }
         public int MaxMetricValueLen { get; set; }
+        public int MaxAggregationTypeLen { get; set; }
         public string DefaultValueFormat { get; set; }
         public MetricConfigValue[] Metrics { get; set; } = { };
     }
