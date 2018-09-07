@@ -2,89 +2,72 @@
 using MonikTerminal.ModelsApi;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MonikTerminal
 {
-	public class KeepAliveTerminal : IKeepAliveTerminal
+    public class KeepAliveTerminal : BaseTerminal, IKeepAliveTerminal
 	{
-		private readonly IMonikService _service;
-		private readonly IConfig _config;
-		private readonly ISourcesCache _sourceCache;
+	    private EKeepAliveRequest _request;
 
-		public KeepAliveTerminal(IMonikService aService, IConfig aConfig, ISourcesCache aSourceCache)
-		{
-			_service = aService;
-			_config = aConfig;
-			_sourceCache = aSourceCache;
-		}
+	    public KeepAliveTerminal(IMonikService aService, IConfig aConfig, ISourcesCache aSourceCache)
+	        : base(aService, aConfig, aSourceCache)
+	    {
+	    }
 
-		public void Start()
-		{
-		    var configKeepAlive = _config.KeepAlive;
+	    protected KeepAliveConfig ConfigKeepAlive => Config.KeepAlive;
 
-			var request = new EKeepAliveRequest();
+	    protected override void OnStart()
+	    {
+	        _request = new EKeepAliveRequest();
 
-		    Console.Title = nameof(MonikTerminal) + ": " + nameof(KeepAliveTerminal);
-                
-            while (true)
-			{
-				try
-				{
-					var task = _service.GetKeepAlives(request);
-					task.Wait();
+	        Console.Title = nameof(MonikTerminal) + ": " + nameof(KeepAliveTerminal);
+        }
 
-					EKeepAlive_[] response = task.Result;
-				    response = response
-				        .OrderBy(x => _sourceCache.GetInstance(x.InstanceID).Name)
-				        .ThenBy(x => _sourceCache.GetInstance(x.InstanceID).Source.Name)
-				        .ToArray();
+	    protected override void Show()
+	    {
+	        var task = Service.GetKeepAlives(_request);
+	        task.Wait();
 
-					Console.Clear();
+	        EKeepAlive_[] response = task.Result;
+	        response = response
+	            .OrderBy(x => SourceCache.GetInstance(x.InstanceID).Name)
+	            .ThenBy(x => SourceCache.GetInstance(x.InstanceID).Source.Name)
+	            .ToArray();
 
-					foreach (var ka in response)
-					{
-						var instance = _sourceCache.GetInstance(ka.InstanceID);
+	        Console.Clear();
 
-						var instName = Converter.Truncate(instance.Name, configKeepAlive.MaxInstanceLen);
-						var srcName = Converter.Truncate(instance.Source.Name, configKeepAlive.MaxSourceLen);
+	        foreach (var ka in response)
+	        {
+	            var instance = SourceCache.GetInstance(ka.InstanceID);
 
-						var whenStr = ka.Created.ToLocalTime().ToString(_config.Common.TimeTemplate);
+	            var instName = Converter.Truncate(instance.Name, ConfigKeepAlive.MaxInstanceLen);
+	            var srcName = Converter.Truncate(instance.Source.Name, ConfigKeepAlive.MaxSourceLen);
 
-						var str = string.Format($"{{0,-{configKeepAlive.MaxSourceLen}}} {{1,-{configKeepAlive.MaxInstanceLen}}} | ",
-							srcName,
-							instName);
+	            var whenStr = ka.Created.ToLocalTime().ToString(ConfigCommon.TimeTemplate);
 
-						Console.Write(str);
+	            var str = string.Format($"{{0,-{ConfigKeepAlive.MaxSourceLen}}} {{1,-{ConfigKeepAlive.MaxInstanceLen}}} | ",
+	                srcName,
+	                instName);
 
-						if ((DateTime.Now - ka.Created.ToLocalTime()).TotalSeconds > configKeepAlive.KeepAliveWarnSeconds)
-						{
-							Console.BackgroundColor = ConsoleColor.DarkRed;
-							Console.Write("[ERROR]");
-							Console.BackgroundColor = ConsoleColor.Black;
-						}
-						else
-						{
-							Console.BackgroundColor = ConsoleColor.DarkGreen;
-							Console.Write("[ OK  ]");
-							Console.BackgroundColor = ConsoleColor.Black;
-						}
+	            Console.Write(str);
 
-						Console.WriteLine(" | " + whenStr);
+	            if ((DateTime.Now - ka.Created.ToLocalTime()).TotalSeconds > ConfigKeepAlive.KeepAliveWarnSeconds)
+	            {
+	                Console.BackgroundColor = ConsoleColor.DarkRed;
+	                Console.Write("[ERROR]");
+	                Console.BackgroundColor = ConsoleColor.Black;
+	            }
+	            else
+	            {
+	                Console.BackgroundColor = ConsoleColor.DarkGreen;
+	                Console.Write("[ OK  ]");
+	                Console.BackgroundColor = ConsoleColor.Black;
+	            }
 
-					}//foreach ka
-				}
-				catch(Exception ex)
-				{
-					Console.WriteLine("INTERNAL ERROR: " + ex.Message);
-				}
+	            Console.WriteLine(" | " + whenStr);
 
-				if (_config.Common.Mode == TerminalMode.Single)
-					return;
-
-				Task.Delay(_config.Common.RefreshPeriod * 1000).Wait();
-			}//while true
-		}
+	        }//foreach ka
+        }
 
 	} //end of class
 }

@@ -1,6 +1,7 @@
 namespace MonikTerminal.Interfaces
 {
-	public interface ILogTerminal : ITerminal
+	public interface ITerminal
 	{
+		void Start();
 	}
 }

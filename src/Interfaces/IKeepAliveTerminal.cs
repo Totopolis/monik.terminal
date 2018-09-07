@@ -1,7 +1,6 @@
 namespace MonikTerminal.Interfaces
 {
-	public interface IKeepAliveTerminal
+	public interface IKeepAliveTerminal : ITerminal
 	{
-		void Start();
 	}
 }

@@ -4,98 +4,81 @@ using MonikTerminal.ModelsApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MonikTerminal
 {
-	public class LogTerminal : ILogTerminal
+    public class LogTerminal : BaseTerminal, ILogTerminal
 	{
-		private readonly IMonikService _service;
-		private readonly IConfig _config;
-		private readonly ISourcesCache _sourceCache;
+	    private ELogRequest _request;
 
 		public LogTerminal(IMonikService aService, IConfig aConfig, ISourcesCache aSourceCache)
-		{
-			_service = aService;
-			_config = aConfig;
-			_sourceCache = aSourceCache;
+		    : base(aService, aConfig, aSourceCache)
+        {
 		}
 
-		public void Start()
-		{
-		    var configLog = _config.Log;
+	    protected LogConfig ConfigLog => Config.Log;
 
-			var request = new ELogRequest()
-			{
-				LastID = null,
-				Top = configLog.Top,
-				Level = configLog.LevelFilter == LevelType.None ? null : (byte?)configLog.LevelFilter,
-				SeverityCutoff = configLog.SeverityCutoff == SeverityCutoffType.None ? null : (byte?)configLog.SeverityCutoff
-			};
+	    protected override void OnStart()
+	    {
+	        _request = new ELogRequest()
+	        {
+	            LastID = null,
+	            Top = ConfigLog.Top,
+	            Level = ConfigLog.LevelFilter == LevelType.None ? null : (byte?)ConfigLog.LevelFilter,
+	            SeverityCutoff = ConfigLog.SeverityCutoff == SeverityCutoffType.None ? null : (byte?)ConfigLog.SeverityCutoff
+	        };
 
-		    Console.Title =
-		        $"{nameof(MonikTerminal)}: {nameof(LogTerminal)}{(configLog.LevelFilter != LevelType.None ? $"({Enum.GetName(typeof(LevelType), configLog.LevelFilter)})" : "")}";
+	        Console.Title =
+	            $"{nameof(MonikTerminal)}: {nameof(LogTerminal)}{(ConfigLog.LevelFilter != LevelType.None ? $"({Enum.GetName(typeof(LevelType), ConfigLog.LevelFilter)})" : "")}";
+        }
 
-            while (true)
-			{
-				try
-                {
-                    var task = _service.GetLogs(request);
-                    task.Wait();
+        protected override void Show()
+	    {
+            var task = Service.GetLogs(_request);
+            task.Wait();
 
-                    ELog_[] response = task.Result;
+            ELog_[] response = task.Result;
 
-                    if (response.Length > 0)
-                        request.LastID = response.Max(x => x.ID);
-                    response = GroupDuplicatingLogs(response).OrderBy(l=>l.ID).ToArray();
+            if (response.Length > 0)
+                _request.LastID = response.Max(x => x.ID);
+            response = GroupDuplicatingLogs(response).OrderBy(l => l.ID).ToArray();
 
-                    foreach (var log in response)
-                    {
-                        var instance = _sourceCache.GetInstance(log.InstanceID);
+            foreach (var log in response)
+            {
+                var instance = SourceCache.GetInstance(log.InstanceID);
 
-                        var instName = Converter.Truncate(instance.Name, configLog.MaxInstanceLen);
-                        var srcName  = Converter.Truncate(instance.Source.Name, configLog.MaxSourceLen);
+                var instName = Converter.Truncate(instance.Name, ConfigLog.MaxInstanceLen);
+                var srcName = Converter.Truncate(instance.Source.Name, ConfigLog.MaxSourceLen);
 
-                        var whenStr = log.Created.ToLocalTime().ToString(log.Doubled ? configLog.DoubledTimeTemplate : _config.Common.TimeTemplate);
+                var whenStr = log.Created.ToLocalTime().ToString(log.Doubled ? ConfigLog.DoubledTimeTemplate : ConfigCommon.TimeTemplate);
 
-                        var bodyStr = log.Body.Replace(Environment.NewLine, "");
+                var bodyStr = log.Body.Replace(Environment.NewLine, "");
 
-                        var sev = (SeverityCutoffType)log.Severity;
-                        var level = (LevelType)log.Level;
+                var sev = (SeverityCutoffType)log.Severity;
+                var level = (LevelType)log.Level;
 
-                        // TODO: support ShowLevelVerbose
+                // TODO: support ShowLevelVerbose
 
-                        var str = string.Format("{0} {1,-" + configLog.MaxSourceLen + "} {2,-" + configLog.MaxInstanceLen + "} {3} {4} | {5}",
-                            whenStr,
-                            srcName,
-                            instName,
-                            Converter.LevelTypeToString(level),
-                            Converter.SeverityToString(sev),
-                            bodyStr);
+                var str = string.Format("{0} {1,-" + ConfigLog.MaxSourceLen + "} {2,-" + ConfigLog.MaxInstanceLen + "} {3} {4} | {5}",
+                    whenStr,
+                    srcName,
+                    instName,
+                    Converter.LevelTypeToString(level),
+                    Converter.SeverityToString(sev),
+                    bodyStr);
 
-                        str = str.Length <= Console.WindowWidth ? str : str.Substring(0, Console.WindowWidth - 1);
+                str = str.Length <= Console.WindowWidth ? str : str.Substring(0, Console.WindowWidth - 1);
 
-                        Console.BackgroundColor = sev >= SeverityCutoffType.Info ? ConsoleColor.Black :
-                            sev == SeverityCutoffType.Warning ? ConsoleColor.DarkYellow : ConsoleColor.DarkRed;
+                Console.BackgroundColor = sev >= SeverityCutoffType.Info ? ConsoleColor.Black :
+                    sev == SeverityCutoffType.Warning ? ConsoleColor.DarkYellow : ConsoleColor.DarkRed;
 
-                        Console.Write(str);
+                Console.Write(str);
 
-                        Console.BackgroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.Black;
 
-                        Console.WriteLine();
-                    }
-                }
-                catch (Exception ex)
-				{
-					Console.WriteLine($"{DateTime.Now.ToString(_config.Common.TimeTemplate)} INTERNAL ERROR: {ex.Message}");
-				}
-
-				if (_config.Common.Mode == TerminalMode.Single)
-					return;
-
-				Task.Delay(_config.Common.RefreshPeriod * 1000).Wait();
-			}
-		}
+                Console.WriteLine();
+            }
+        }
 
 	    public IEnumerable<ELog_> GroupDuplicatingLogs(ELog_[] response)
         {
@@ -105,7 +88,7 @@ namespace MonikTerminal
                 var firstIn5Sec = g.GroupBy(r =>
                     {
                         var totalSeconds = (r.Created - min).TotalSeconds;
-                        var rez = totalSeconds - totalSeconds % _config.Common.RefreshPeriod;
+                        var rez = totalSeconds - totalSeconds % ConfigCommon.RefreshPeriod;
 
                         return rez;
                     })

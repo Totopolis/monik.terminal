@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\src\BaseTerminal.cs" Link="BaseTerminal.cs" />
     <Compile Include="..\..\src\Bootstrap.cs" Link="Bootstrap.cs" />
     <Compile Include="..\..\src\Config.cs" Link="Config.cs" />
     <Compile Include="..\..\src\Converter.cs" Link="Converter.cs" />
@@ -20,9 +21,9 @@
     <Compile Include="..\..\src\Interfaces\IMetricTerminal.cs" Link="Interfaces\IMetricTerminal.cs" />
     <Compile Include="..\..\src\Interfaces\IMonikService.cs" Link="Interfaces\IMonikService.cs" />
     <Compile Include="..\..\src\Interfaces\ISourcesCache.cs" Link="Interfaces\ISourcesCache.cs" />
+    <Compile Include="..\..\src\Interfaces\ITerminal.cs" Link="Interfaces\ITerminal.cs" />
     <Compile Include="..\..\src\KeepAliveTerminal.cs" Link="KeepAliveTerminal.cs" />
     <Compile Include="..\..\src\LogTerminal.cs" Link="LogTerminal.cs" />
-    <Compile Include="..\..\src\MetricConfig.cs" Link="MetricConfig.cs" />
     <Compile Include="..\..\src\MetricTerminal.cs" Link="MetricTerminal.cs" />
     <Compile Include="..\..\src\ModelsApi\EGroup.cs" Link="ModelsApi\EGroup.cs" />
     <Compile Include="..\..\src\ModelsApi\EInstance.cs" Link="ModelsApi\EInstance.cs" />
