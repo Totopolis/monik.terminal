@@ -16,7 +16,7 @@ namespace MonicTerminalTests
         private LogTerminal terminal;
 
         private Mock<IMonikService> monicMock  = new Mock<IMonikService>();
-        private IConfig             config     = new Config();
+        private IConfig             config     = Config.Default();
         private Mock<ISourcesCache> cacheMock  = new Mock<ISourcesCache>();
 
         [OneTimeSetUp]
@@ -51,7 +51,7 @@ namespace MonicTerminalTests
                 }, 
                 new ELog_()
                 {
-                    Created = curTime.AddSeconds(config.RefreshPeriod+1),
+                    Created = curTime.AddSeconds(config.Common.RefreshPeriod+1),
                     Body = "testBody2",
                     InstanceID = 2,
                     Level = (byte)LevelType.Logic,
@@ -80,7 +80,7 @@ namespace MonicTerminalTests
                 }, 
                 new ELog_()
                 {
-                    Created = curTime.AddSeconds(config.RefreshPeriod+1),
+                    Created = curTime.AddSeconds(config.Common.RefreshPeriod+1),
                     Body = "testBody2",
                     InstanceID = 2,
                     Level = (byte)LevelType.Application,
@@ -109,7 +109,7 @@ namespace MonicTerminalTests
                 }, 
                 new ELog_()
                 {
-                    Created = curTime.AddSeconds(config.RefreshPeriod+1),
+                    Created = curTime.AddSeconds(config.Common.RefreshPeriod+1),
                     Body = "testBody1",
                     InstanceID = 1,
                     Level = (byte)LevelType.Application,
@@ -138,7 +138,7 @@ namespace MonicTerminalTests
                 }, 
                 new ELog_()
                 {
-                    Created = curTime.AddSeconds(config.RefreshPeriod-1),
+                    Created = curTime.AddSeconds(config.Common.RefreshPeriod-1),
                     Body = "testBody1",
                     InstanceID = 1,
                     Level = (byte)LevelType.Application,
@@ -168,7 +168,7 @@ namespace MonicTerminalTests
                 }, 
                 new ELog_()
                 {
-                    Created = curTime.AddSeconds(config.RefreshPeriod-1),
+                    Created = curTime.AddSeconds(config.Common.RefreshPeriod-1),
                     Body = "testBody1",
                     InstanceID = 1,
                     Level = (byte)LevelType.Application,
@@ -176,7 +176,7 @@ namespace MonicTerminalTests
                 }, 
                 new ELog_()
                 {
-                    Created = curTime.AddSeconds(config.RefreshPeriod+1),
+                    Created = curTime.AddSeconds(config.Common.RefreshPeriod+1),
                     Body = "testBody1",
                     InstanceID = 1,
                     Level = (byte)LevelType.Application,
@@ -184,7 +184,7 @@ namespace MonicTerminalTests
                 },
                 new ELog_()
                 {
-                    Created = curTime.AddSeconds(config.RefreshPeriod+1),
+                    Created = curTime.AddSeconds(config.Common.RefreshPeriod+1),
                     Body = "testBody2",
                     InstanceID = 2,
                     Level = (byte)LevelType.Logic,

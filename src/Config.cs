@@ -1,8 +1,7 @@
 using MonikTerminal.Enums;
 using MonikTerminal.Interfaces;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace MonikTerminal
@@ -13,68 +12,105 @@ namespace MonikTerminal
         Single
     }
 
+    public class MetricConfigArea
+    {
+        public double?[] Range { get; set; }
+        public string Color { get; set; }
+    }
+
+    public class MetricConfigValue
+    {
+        public long MetricId { get; set; }
+        public string Name { get; set; }
+        public string ValueFormat { get; set; }
+        public MetricConfigArea[] Areas { get; set; } = {};
+    }
+
+    public class MetricsConfig
+    {
+        public int MaxMetricLen { get; set; } = 16;
+        public int MaxMetricValueLen { get; set; } = 8;
+        public int MaxAggregationTypeLen { get; set; } = 3;
+        public string DefaultValueFormat { get; set; } = "0.#";
+        public MetricConfigValue[] Metrics { get; set; } = {};
+    }
+
+    public class CommonConfig
+    {
+        public string TimeTemplate { get; set; } = "HH:mm";
+
+        public string ServerUrl { get; set; } = "http://url/";
+        public int RefreshPeriod { get; set; } = 5;
+
+        [JsonIgnore] public TerminalMode Mode { get; set; } = TerminalMode.Stream;
+
+        [JsonProperty("Mode")]
+        public string TmpMode
+        {
+            get => Converter.TerminalModeToString(Mode);
+            set => Mode = Converter.StringToTerminalMode(value);
+        }
+    }
+
+    public class LogConfig
+    {
+        public string DoubledTimeTemplate { get; set; } = "HH:**";
+
+        public int MaxSourceLen { get; set; } = 12;
+        public int MaxInstanceLen { get; set; } = 8;
+
+        public bool ShowLevelVerbose { get; set; } = true;
+        public int Top { get; set; } = 25;
+
+        [JsonIgnore] public LevelType LevelFilter { get; set; } = LevelType.None;
+
+        [JsonProperty("LevelFilter")]
+        public string TmpLevelFilter
+        {
+            get => Converter.LevelTypeToString(LevelFilter);
+            set => LevelFilter = Converter.StringToLevelType(value);
+        }
+
+        [JsonIgnore] public SeverityCutoffType SeverityCutoff { get; set; } = SeverityCutoffType.None;
+
+        [JsonProperty("SeverityCutoff")]
+        public string TmpSeverityCutoff
+        {
+            get => Converter.SeverityToString(SeverityCutoff);
+            set => SeverityCutoff = Converter.StringToSeverity(value);
+        }
+    }
+
+    public class KeepAliveConfig
+    {
+        public int MaxSourceLen { get; set; } = 12;
+        public int MaxInstanceLen { get; set; } = 8;
+
+        public int KeepAliveWarnSeconds { get; set; } = 60;
+    }
+
     public class Config : IConfig
     {
-        public string ServerUrl { get; set; } = "http://url/";
+        public static Config Default()
+        {
+            return new Config
+            {
+                Common = new CommonConfig(),
+                Log = new LogConfig(),
+                KeepAlive = new KeepAliveConfig(),
+                Metrics = new MetricsConfig()
+            };
+        }
 
-        public string             TimeTemplate             { get; set; } = "HH:mm";
-        public string             DoubledTimeTemplate      { get; set; } = "HH:**";
-        public int                MaxSourceLen             { get; set; } = 12;
-        public int                MaxInstanceLen           { get; set; } = 8;
-        public int                RefreshPeriod            { get; set; } = 5;
-        public int                KeepAliveWarnSeconds     { get; set; } = 60;
-        public LevelType          LevelFilter              { get; set; } = LevelType.None;
-        public SeverityCutoffType SeverityCutoff           { get; set; } = SeverityCutoffType.None;
-        public bool               ShowLevelVerbose         { get; set; } = true;
-        public int                Top                      { get; set; } = 25;
-        public TerminalMode       Mode                     { get; set; } = TerminalMode.Stream;
+        public CommonConfig Common { get; set; }
+        public LogConfig Log { get; set; }
+        public KeepAliveConfig KeepAlive { get; set; }
+        public MetricsConfig Metrics { get; set; }
 
         public void Load(string aFileName)
         {
-            string json = File.ReadAllText(aFileName);
-
-            var                         jobj = JObject.Parse(json);
-            IDictionary<string, JToken> dic  = jobj;
-
-            if (dic.ContainsKey("ServerUrl"))
-                ServerUrl = (string) dic["ServerUrl"];
-
-            if (dic.ContainsKey("TimeTemplate"))
-                TimeTemplate = (string) dic["TimeTemplate"];
-
-            if (dic.ContainsKey("DoubledTimeTemplate"))
-                DoubledTimeTemplate = (string) dic["DoubledTimeTemplate"];
-
-            if (dic.ContainsKey("MaxSourceLen"))
-                MaxSourceLen = (int) dic["MaxSourceLen"];
-
-            if (dic.ContainsKey("MaxInstanceLen"))
-                MaxInstanceLen = (int) dic["MaxInstanceLen"];
-
-            if (dic.ContainsKey("RefreshPeriod"))
-                RefreshPeriod = (int) dic["RefreshPeriod"];
-
-            if (dic.ContainsKey("KeepAliveWarnSeconds"))
-                KeepAliveWarnSeconds = (int) dic["KeepAliveWarnSeconds"];
-
-            if (dic.ContainsKey("LevelFilter"))
-                LevelFilter = Converter.StringToLevelType((string) dic["LevelFilter"]);
-
-            if (dic.ContainsKey("SeverityCutoff"))
-                SeverityCutoff = Converter.StringToSeverity((string) dic["SeverityCutoff"]);
-
-            if (dic.ContainsKey("ShowLevelVerbose"))
-                ShowLevelVerbose = (bool) dic["ShowLevelVerbose"];
-
-            if (dic.ContainsKey("Top"))
-                Top = (int) dic["Top"];
-
-            if (dic.ContainsKey("Mode"))
-            {
-                string md = (string) dic["Mode"];
-                Mode = md == "single" ? TerminalMode.Single : TerminalMode.Stream;
-            }
-
+            var json = File.ReadAllText(aFileName);
+            JsonConvert.PopulateObject(json, this);
             Console.WriteLine("Config loaded");
         }
     }

@@ -82,7 +82,7 @@ namespace MonikTerminal
 			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 			client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
 
-			var stringTask = client.GetStringAsync(_cfg.ServerUrl + aMethod);
+			var stringTask = client.GetStringAsync(_cfg.Common.ServerUrl + aMethod);
 
 			return await stringTask;
 		}
@@ -97,7 +97,7 @@ namespace MonikTerminal
 
 			var content = new StringContent(aJson, Encoding.UTF8, "application/json");
 
-			var stringTask = await client.PostAsync(_cfg.ServerUrl + aMethod, content);
+			var stringTask = await client.PostAsync(_cfg.Common.ServerUrl + aMethod, content);
 
 			// TODO: check resulted http status code
 

@@ -9,7 +9,9 @@ namespace MonikTerminal
 {
     public class Entry
 	{
-		public static void Point(string[] args)
+	    private const string DefaultConfigPath = "monik.json";
+
+        public static void Point(string[] args)
 		{
 			//Console.ForegroundColor = ConsoleColor.White;
 			Console.BackgroundColor = ConsoleColor.Black;
@@ -24,9 +26,10 @@ namespace MonikTerminal
 			var showSources    = app.Option("-u | --show-sources",    "Display source list",         CommandOptionType.NoValue);
 			var showLogs       = app.Option("-g | --show-logs",       "Display logs",                CommandOptionType.NoValue);
 			var showKeepAlives = app.Option("-k | --show-keepalive",  "Display keep-alive statuses", CommandOptionType.NoValue);
-            var listMetrics    = app.Option("-M | --list-metrics",    "Display all metrics",         CommandOptionType.NoValue);
-            var showMetrics    = app.Option("-m | --show-metrics",    "Display metrics Values",      CommandOptionType.SingleValue);
-			var customSettings = app.Option("-c | --custom-settings", "Use custom settings",         CommandOptionType.SingleValue);
+            var listMetrics    = app.Option("-l | --list-metrics",    "Display all metrics",         CommandOptionType.NoValue);
+            var fillMetrics    = app.Option("-f | --fill-metrics",    "Fill config with metrics",    CommandOptionType.NoValue);
+            var showMetrics    = app.Option("-m | --show-metrics",    "Display metrics Values",      CommandOptionType.NoValue);
+			var customConfig   = app.Option("-c | --custom-settings", "Use custom settings",         CommandOptionType.SingleValue);
 
 			app.OnExecute(() =>
 			{
@@ -36,16 +39,13 @@ namespace MonikTerminal
 				var service = container.Resolve<IMonikService>();
 				var cache = container.Resolve<ISourcesCache>();
 
-			    var settingsPath = "monik.json";
-
-                if (customSettings.HasValue())
-                {
-                    settingsPath = customSettings.Value();
-                }
+			    var configPath = customConfig.HasValue()
+			        ? customConfig.Value()
+                    : DefaultConfigPath;
 
 				try
 				{
-					cfg.Load(settingsPath);
+					cfg.Load(configPath);
 
 					cache.Reload().Wait();
 				}
@@ -83,7 +83,7 @@ namespace MonikTerminal
 				if (showMetrics.HasValue())
 				{
 				    var term = container.Resolve<IMetricTerminal>();
-					term.Start(showMetrics.Value());
+					term.Start();
 				}
 
 			    if (listMetrics.HasValue())

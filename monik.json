@@ -1,13 +1,50 @@
 {
+  "Common":
+  {
     "ServerUrl": "http://url/",
-	"TimeTemplate": "HH:mm",
-	"MaxSourceLen": 12,
-    "MaxInstanceLen": 8,
+    "TimeTemplate": "HH:mm",
     "RefreshPeriod": 5,
-	"KeepAliveWarnSeconds": 60,
-	"LevelFilter": "none",
-	"SeverityCutoff": "info",
-	"ShowLevelVerbose": true,
-    "Top": 20,
     "Mode" : "stream"
+  },
+  "Log":{
+    "MaxSourceLen": 12,
+    "MaxInstanceLen": 8,
+    "LevelFilter": "none",
+    "SeverityCutoff": "info",
+    "ShowLevelVerbose": true,
+    "Top": 20,
+  },
+  "KeepAlive":
+  {
+    "MaxSourceLen": 12,
+    "MaxInstanceLen": 8,
+    "KeepAliveWarnSeconds": 60,
+  },
+  "Metrics":
+  {
+    "MaxMetricLen": 8,
+    "MaxMetricValueLen": 8,
+    "MaxAggregationTypeLen": 3,
+    "DefaultValueFormat": "0.#",
+    "Metrics": [
+      {
+        "MetricId": 1,
+        "ValueFormat": "##0.0",
+        "Areas": [
+          {"Range": [30, null], "Color": "DarkRed"},
+          {"Range": [20, 30], "Color": "DarkYellow"},
+          {"Range": [10, 20], "Color": "DarkGreen"},
+          {"Range": [null, 10], "Color": "Black"}
+        ]
+      },
+      {
+        "MetricId": 2,
+        "Areas": [
+          {"Range": [null, 0], "Color": "DarkGreen"},
+          {"Range": [0, 0.5], "Color": "DarkYellow"},
+          {"Range": [0.5, null], "Color": "DarkRed"}
+        ]
+      }
+    ]
+  }
 }

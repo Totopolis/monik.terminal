@@ -21,6 +21,8 @@ namespace MonikTerminal
 
 		public void Start()
 		{
+		    var configKeepAlive = _config.KeepAlive;
+
 			var request = new EKeepAliveRequest();
 
 		    Console.Title = nameof(MonikTerminal) + ": " + nameof(KeepAliveTerminal);
@@ -44,18 +46,18 @@ namespace MonikTerminal
 					{
 						var instance = _sourceCache.GetInstance(ka.InstanceID);
 
-						var instName = Converter.Truncate(instance.Name, _config.MaxInstanceLen);
-						var srcName = Converter.Truncate(instance.Source.Name, _config.MaxSourceLen);
+						var instName = Converter.Truncate(instance.Name, configKeepAlive.MaxInstanceLen);
+						var srcName = Converter.Truncate(instance.Source.Name, configKeepAlive.MaxSourceLen);
 
-						var whenStr = ka.Created.ToLocalTime().ToString(_config.TimeTemplate);
+						var whenStr = ka.Created.ToLocalTime().ToString(_config.Common.TimeTemplate);
 
-						var str = string.Format($"{{0,-{_config.MaxSourceLen}}} {{1,-{_config.MaxInstanceLen}}} | ",
+						var str = string.Format($"{{0,-{configKeepAlive.MaxSourceLen}}} {{1,-{configKeepAlive.MaxInstanceLen}}} | ",
 							srcName,
 							instName);
 
 						Console.Write(str);
 
-						if ((DateTime.Now - ka.Created.ToLocalTime()).TotalSeconds > _config.KeepAliveWarnSeconds)
+						if ((DateTime.Now - ka.Created.ToLocalTime()).TotalSeconds > configKeepAlive.KeepAliveWarnSeconds)
 						{
 							Console.BackgroundColor = ConsoleColor.DarkRed;
 							Console.Write("[ERROR]");
@@ -77,10 +79,10 @@ namespace MonikTerminal
 					Console.WriteLine("INTERNAL ERROR: " + ex.Message);
 				}
 
-				if (_config.Mode == TerminalMode.Single)
+				if (_config.Common.Mode == TerminalMode.Single)
 					return;
 
-				Task.Delay(_config.RefreshPeriod * 1000).Wait();
+				Task.Delay(_config.Common.RefreshPeriod * 1000).Wait();
 			}//while true
 		}
 

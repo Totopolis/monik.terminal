@@ -23,16 +23,18 @@ namespace MonikTerminal
 
 		public void Start()
 		{
+		    var configLog = _config.Log;
+
 			var request = new ELogRequest()
 			{
 				LastID = null,
-				Top = _config.Top,
-				Level = _config.LevelFilter == LevelType.None ? null : (byte?)_config.LevelFilter,
-				SeverityCutoff = _config.SeverityCutoff == SeverityCutoffType.None ? null : (byte?)_config.SeverityCutoff
+				Top = configLog.Top,
+				Level = configLog.LevelFilter == LevelType.None ? null : (byte?)configLog.LevelFilter,
+				SeverityCutoff = configLog.SeverityCutoff == SeverityCutoffType.None ? null : (byte?)configLog.SeverityCutoff
 			};
 
 		    Console.Title =
-		        $"{nameof(MonikTerminal)}: {nameof(LogTerminal)}{(_config.LevelFilter != LevelType.None ? $"({Enum.GetName(typeof(LevelType), _config.LevelFilter)})" : "")}";
+		        $"{nameof(MonikTerminal)}: {nameof(LogTerminal)}{(configLog.LevelFilter != LevelType.None ? $"({Enum.GetName(typeof(LevelType), configLog.LevelFilter)})" : "")}";
 
             while (true)
 			{
@@ -51,10 +53,10 @@ namespace MonikTerminal
                     {
                         var instance = _sourceCache.GetInstance(log.InstanceID);
 
-                        var instName = Converter.Truncate(instance.Name, _config.MaxInstanceLen);
-                        var srcName  = Converter.Truncate(instance.Source.Name, _config.MaxSourceLen);
+                        var instName = Converter.Truncate(instance.Name, configLog.MaxInstanceLen);
+                        var srcName  = Converter.Truncate(instance.Source.Name, configLog.MaxSourceLen);
 
-                        var whenStr = log.Created.ToLocalTime().ToString(log.Doubled ? _config.DoubledTimeTemplate : _config.TimeTemplate);
+                        var whenStr = log.Created.ToLocalTime().ToString(log.Doubled ? configLog.DoubledTimeTemplate : _config.Common.TimeTemplate);
 
                         var bodyStr = log.Body.Replace(Environment.NewLine, "");
 
@@ -63,7 +65,7 @@ namespace MonikTerminal
 
                         // TODO: support ShowLevelVerbose
 
-                        var str = string.Format("{0} {1,-" + _config.MaxSourceLen + "} {2,-" + _config.MaxInstanceLen + "} {3} {4} | {5}",
+                        var str = string.Format("{0} {1,-" + configLog.MaxSourceLen + "} {2,-" + configLog.MaxInstanceLen + "} {3} {4} | {5}",
                             whenStr,
                             srcName,
                             instName,
@@ -85,13 +87,13 @@ namespace MonikTerminal
                 }
                 catch (Exception ex)
 				{
-					Console.WriteLine($"{DateTime.Now.ToString(_config.TimeTemplate)} INTERNAL ERROR: {ex.Message}");
+					Console.WriteLine($"{DateTime.Now.ToString(_config.Common.TimeTemplate)} INTERNAL ERROR: {ex.Message}");
 				}
 
-				if (_config.Mode == TerminalMode.Single)
+				if (_config.Common.Mode == TerminalMode.Single)
 					return;
 
-				Task.Delay(_config.RefreshPeriod * 1000).Wait();
+				Task.Delay(_config.Common.RefreshPeriod * 1000).Wait();
 			}
 		}
 
@@ -103,7 +105,7 @@ namespace MonikTerminal
                 var firstIn5Sec = g.GroupBy(r =>
                     {
                         var totalSeconds = (r.Created - min).TotalSeconds;
-                        var rez = totalSeconds - totalSeconds % _config.RefreshPeriod;
+                        var rez = totalSeconds - totalSeconds % _config.Common.RefreshPeriod;
 
                         return rez;
                     })
