@@ -1,7 +1,12 @@
 using Autofac;
 using Microsoft.Extensions.CommandLineUtils;
+using MonikTerminal.Enums;
 using MonikTerminal.Interfaces;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -45,7 +50,9 @@ namespace MonikTerminal
 
 				try
 				{
-					cfg.Load(configPath);
+				    var jsonConfig = File.ReadAllText(configPath);
+				    JsonConvert.PopulateObject(jsonConfig, cfg);
+				    Console.WriteLine("Config loaded");
 
 					cache.Reload().Wait();
 				}
@@ -102,6 +109,38 @@ namespace MonikTerminal
                             metric.Instance.Source.Name + "." + metric.Instance.Name,
                             metric.Aggregation);
 			        }
+			    }
+
+			    if (fillMetrics.HasValue())
+			    {
+			        var alreadyInConfig = new HashSet<long>(cfg.Metrics.Metrics.Select(m => m.MetricId));
+			        var data = cache.Metrics
+			            .OrderBy(x => x.Instance.Source.Name)
+			            .ThenBy(x => x.Instance.Name)
+			            .ThenBy(x => x.Name);
+
+			        var metrics =
+			            from m in data
+			            where !alreadyInConfig.Contains(m.ID)
+			            select new
+			            {
+			                MetricId = m.ID,
+			                Name = $"{m.Instance.Source.Name}.{m.Instance.Name}.{m.Name}",
+			                ValueFormat = m.Aggregation == AggregationType.Gauge
+			                    ? cfg.MetricsFill.ValueFormatGauge
+			                    : cfg.MetricsFill.ValueFormatAccum,
+			                Areas = new JRaw(cfg.MetricsFill.Areas)
+			            };
+
+			        var settings = new JsonSerializerSettings
+			        {
+			            Formatting = Formatting.Indented,
+			            DefaultValueHandling = DefaultValueHandling.Ignore,
+			            NullValueHandling = NullValueHandling.Ignore
+			        };
+
+			        var json = JsonConvert.SerializeObject(metrics, settings);
+			        File.WriteAllText("monikNew.json", json);
 			    }
 
 				return 0;

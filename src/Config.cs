@@ -1,8 +1,6 @@
 using MonikTerminal.Enums;
 using MonikTerminal.Interfaces;
 using Newtonsoft.Json;
-using System;
-using System.IO;
 
 namespace MonikTerminal
 {
@@ -89,6 +87,18 @@ namespace MonikTerminal
         public int KeepAliveWarnSeconds { get; set; } = 60;
     }
 
+    public class MetricsFillConfig
+    {
+        public string ValueFormatAccum { get; set; } = null;
+        public string ValueFormatGauge { get; set; } = "0.#";
+        public string Areas { get; set; } =
+            @"[
+      {""Range"": [null, 0], ""Color"": ""DarkGreen""},
+      {""Range"": [0, 1], ""Color"": ""DarkYellow""},
+      {""Range"": [1, null], ""Color"": ""DarkRed""}
+    ]";
+    }
+
     public class Config : IConfig
     {
         public static Config Default()
@@ -106,12 +116,6 @@ namespace MonikTerminal
         public LogConfig Log { get; set; }
         public KeepAliveConfig KeepAlive { get; set; }
         public MetricsConfig Metrics { get; set; }
-
-        public void Load(string aFileName)
-        {
-            var json = File.ReadAllText(aFileName);
-            JsonConvert.PopulateObject(json, this);
-            Console.WriteLine("Config loaded");
-        }
+        public MetricsFillConfig MetricsFill { get; set; }
     }
 }

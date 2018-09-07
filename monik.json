@@ -20,6 +20,15 @@
     "MaxInstanceLen": 8,
     "KeepAliveWarnSeconds": 60,
   },
+  "MetricsFill": {
+    "Areas": "[
+      {\"Range\": [null, 0], \"Color\": \"DarkGreen\"},
+      {\"Range\": [0, 1], \"Color\": \"DarkYellow\"},
+      {\"Range\": [1, null], \"Color\": \"DarkRed\"}
+    ]",
+    "ValueFormatGauge": "0.#",
+    "ValueFormatAccum": null
+  },
   "Metrics":
   {
     "MaxMetricLen": 8,
