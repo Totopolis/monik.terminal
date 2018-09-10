@@ -20,8 +20,10 @@
     <Compile Include="..\..\src\Interfaces\ILogTerminal.cs" Link="Interfaces\ILogTerminal.cs" />
     <Compile Include="..\..\src\Interfaces\IMetricTerminal.cs" Link="Interfaces\IMetricTerminal.cs" />
     <Compile Include="..\..\src\Interfaces\IMonikService.cs" Link="Interfaces\IMonikService.cs" />
+    <Compile Include="..\..\src\Interfaces\ISerializer.cs" Link="Interfaces\ISerializer.cs" />
     <Compile Include="..\..\src\Interfaces\ISourcesCache.cs" Link="Interfaces\ISourcesCache.cs" />
     <Compile Include="..\..\src\Interfaces\ITerminal.cs" Link="Interfaces\ITerminal.cs" />
+    <Compile Include="..\..\src\JsonSerializer.cs" Link="JsonSerializer.cs" />
     <Compile Include="..\..\src\KeepAliveTerminal.cs" Link="KeepAliveTerminal.cs" />
     <Compile Include="..\..\src\LogTerminal.cs" Link="LogTerminal.cs" />
     <Compile Include="..\..\src\MetricTerminal.cs" Link="MetricTerminal.cs" />
