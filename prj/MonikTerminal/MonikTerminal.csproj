@@ -6,10 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\src\BaseTerminal.cs" Link="BaseTerminal.cs" />
     <Compile Include="..\..\src\Bootstrap.cs" Link="Bootstrap.cs" />
     <Compile Include="..\..\src\Config.cs" Link="Config.cs" />
     <Compile Include="..\..\src\Converter.cs" Link="Converter.cs" />
     <Compile Include="..\..\src\Entry.cs" Link="Entry.cs" />
+    <Compile Include="..\..\src\Enums\AggregationType.cs" Link="Enums\AggregationType.cs" />
     <Compile Include="..\..\src\Enums\LevelType.cs" Link="Enums\LevelType.cs" />
     <Compile Include="..\..\src\Enums\SeverityCutoffType.cs" Link="Enums\SeverityCutoffType.cs" />
     <Compile Include="..\..\src\Enums\TopType.cs" Link="Enums\TopType.cs" />
@@ -18,7 +20,10 @@
     <Compile Include="..\..\src\Interfaces\ILogTerminal.cs" Link="Interfaces\ILogTerminal.cs" />
     <Compile Include="..\..\src\Interfaces\IMetricTerminal.cs" Link="Interfaces\IMetricTerminal.cs" />
     <Compile Include="..\..\src\Interfaces\IMonikService.cs" Link="Interfaces\IMonikService.cs" />
+    <Compile Include="..\..\src\Interfaces\ISerializer.cs" Link="Interfaces\ISerializer.cs" />
     <Compile Include="..\..\src\Interfaces\ISourcesCache.cs" Link="Interfaces\ISourcesCache.cs" />
+    <Compile Include="..\..\src\Interfaces\ITerminal.cs" Link="Interfaces\ITerminal.cs" />
+    <Compile Include="..\..\src\JsonSerializer.cs" Link="JsonSerializer.cs" />
     <Compile Include="..\..\src\KeepAliveTerminal.cs" Link="KeepAliveTerminal.cs" />
     <Compile Include="..\..\src\LogTerminal.cs" Link="LogTerminal.cs" />
     <Compile Include="..\..\src\MetricTerminal.cs" Link="MetricTerminal.cs" />
@@ -28,10 +33,13 @@
     <Compile Include="..\..\src\ModelsApi\EKeepAlive_.cs" Link="ModelsApi\EKeepAlive_.cs" />
     <Compile Include="..\..\src\ModelsApi\ELogRequest.cs" Link="ModelsApi\ELogRequest.cs" />
     <Compile Include="..\..\src\ModelsApi\ELog_.cs" Link="ModelsApi\ELog_.cs" />
+    <Compile Include="..\..\src\ModelsApi\EMetric.cs" Link="ModelsApi\EMetric.cs" />
+    <Compile Include="..\..\src\ModelsApi\EMetricWindow.cs" Link="ModelsApi\EMetricWindow.cs" />
     <Compile Include="..\..\src\ModelsApi\ESource.cs" Link="ModelsApi\ESource.cs" />
     <Compile Include="..\..\src\ModelsApp\Group.cs" Link="ModelsApp\Group.cs" />
     <Compile Include="..\..\src\ModelsApp\Instance.cs" Link="ModelsApp\Instance.cs" />
     <Compile Include="..\..\src\ModelsApp\LogItem.cs" Link="ModelsApp\LogItem.cs" />
+    <Compile Include="..\..\src\ModelsApp\Metric.cs" Link="ModelsApp\Metric.cs" />
     <Compile Include="..\..\src\ModelsApp\Source.cs" Link="ModelsApp\Source.cs" />
     <Compile Include="..\..\src\MonikService.cs" Link="MonikService.cs" />
     <Compile Include="..\..\src\SourcesCache.cs" Link="SourcesCache.cs" />
@@ -46,6 +54,8 @@
   <ItemGroup>
     <Folder Include="Enums\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="ModelsApi\" />
+    <Folder Include="ModelsApp\" />
   </ItemGroup>
 
 </Project>

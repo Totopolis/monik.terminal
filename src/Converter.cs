@@ -68,5 +68,28 @@ namespace MonikTerminal
                    aStr == "err" || aStr == "error"   ? SeverityCutoffType.Error :
                    aStr == "fat" || aStr == "fatal"   ? SeverityCutoffType.Fatal : SeverityCutoffType.None;
         }
+
+        public static string TerminalModeToString(TerminalMode aMode)
+        {
+            switch (aMode)
+            {
+                case TerminalMode.Single:
+                    return "single";
+                case TerminalMode.Stream:
+                    return "stream";
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public static TerminalMode StringToTerminalMode(string aStr)
+        {
+            return aStr == "single" ? TerminalMode.Single : TerminalMode.Stream;
+        }
+
+        public static string Truncate(string value, int maxLen, string dots = "..")
+        {
+            return value.Length <= maxLen ? value : value.Substring(0, maxLen - dots.Length) + dots;
+        }
     } //end of class
 }

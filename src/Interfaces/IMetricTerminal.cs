@@ -1,7 +1,6 @@
 namespace MonikTerminal.Interfaces
 {
-	public interface IMetricTerminal
+	public interface IMetricTerminal : ITerminal
     {
-		void Start();
 	}
 }

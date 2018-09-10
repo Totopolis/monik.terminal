@@ -59,28 +59,19 @@ namespace MonikTerminal
 			return result;
 		}
 
-	    public async Task<EMetric_[]> GetCurrentMetrics()
+	    public async Task<EMetricWindow[]> GetMetricsWindow()
 	    {
-	        var json = await GetJson("currentMetrics");
-	        var result = JsonConvert.DeserializeObject<EMetric_[]>(json);
+	        var json = await GetJson("metrics/windows");
+	        var result = JsonConvert.DeserializeObject<EMetricWindow[]>(json);
 	        return result;
         }
 
-	    public async Task<EMetricDescription_[]> GetMetricDescriptions()
+	    public async Task<EMetric[]> GetMetrics()
 	    {
-	        var json = await GetJson("metricDescriptions");
-	        var result = JsonConvert.DeserializeObject<EMetricDescription_[]>(json);
+	        var json = await GetJson("metrics");
+	        var result = JsonConvert.DeserializeObject<EMetric[]>(json);
 	        return result;
-        }
-
-	    public async Task<EMetric_[]> GetHistoryMetrics(EMetricHistoryRequest metricHistoryRequest)
-	    {
-	        var reqJson = JsonConvert.SerializeObject(metricHistoryRequest);
-	        var resJson = await PostJson("metricHistory", reqJson);
-
-	        var result = JsonConvert.DeserializeObject<EMetric_[]>(resJson);
-	        return result;
-        }
+	    }
 
 
         private async Task<string> GetJson(string aMethod)
@@ -91,7 +82,7 @@ namespace MonikTerminal
 			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 			client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
 
-			var stringTask = client.GetStringAsync(_cfg.ServerUrl + aMethod);
+			var stringTask = client.GetStringAsync(_cfg.Common.ServerUrl + aMethod);
 
 			return await stringTask;
 		}
@@ -106,7 +97,7 @@ namespace MonikTerminal
 
 			var content = new StringContent(aJson, Encoding.UTF8, "application/json");
 
-			var stringTask = await client.PostAsync(_cfg.ServerUrl + aMethod, content);
+			var stringTask = await client.PostAsync(_cfg.Common.ServerUrl + aMethod, content);
 
 			// TODO: check resulted http status code
 

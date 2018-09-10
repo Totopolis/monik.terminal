@@ -1,101 +1,84 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using MonikTerminal.Enums;
 using MonikTerminal.Interfaces;
-using MonikTerminal.ModelsApp;
-using System.Threading.Tasks;
-using System;
 using MonikTerminal.ModelsApi;
-using System.Text;
-using MonikTerminal.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MonikTerminal
 {
-	public class LogTerminal : ILogTerminal
+    public class LogTerminal : BaseTerminal, ILogTerminal
 	{
-		private readonly IMonikService _service;
-		private readonly IConfig _config;
-		private readonly ISourcesCache _sourceCache;
+	    private ELogRequest _request;
 
 		public LogTerminal(IMonikService aService, IConfig aConfig, ISourcesCache aSourceCache)
-		{
-			_service = aService;
-			_config = aConfig;
-			_sourceCache = aSourceCache;
+		    : base(aService, aConfig, aSourceCache)
+        {
 		}
 
-		public void Start()
-		{
-			var request = new ELogRequest()
-			{
-				LastID = null,
-				Top = _config.Top,
-				Level = _config.LevelFilter == LevelType.None ? null : (byte?)_config.LevelFilter,
-				SeverityCutoff = _config.SeverityCutoff == SeverityCutoffType.None ? null : (byte?)_config.SeverityCutoff
-			};
+	    protected LogConfig ConfigLog => Config.Log;
 
-		    Console.Title =
-		        $"{nameof(MonikTerminal)}: {nameof(LogTerminal)}{(_config.LevelFilter != LevelType.None ? $"({Enum.GetName(typeof(LevelType), _config.LevelFilter)})" : "")}";
+	    protected override void OnStart()
+	    {
+	        _request = new ELogRequest()
+	        {
+	            LastID = null,
+	            Top = ConfigLog.Top,
+	            Level = ConfigLog.LevelFilter == LevelType.None ? null : (byte?)ConfigLog.LevelFilter,
+	            SeverityCutoff = ConfigLog.SeverityCutoff == SeverityCutoffType.None ? null : (byte?)ConfigLog.SeverityCutoff
+	        };
 
-            while (true)
-			{
-				try
-                {
-                    var task = _service.GetLogs(request);
-                    task.Wait();
+	        Console.Title =
+	            $"{nameof(MonikTerminal)}: {nameof(LogTerminal)}{(ConfigLog.LevelFilter != LevelType.None ? $"({Enum.GetName(typeof(LevelType), ConfigLog.LevelFilter)})" : "")}";
+        }
 
-                    ELog_[] response = task.Result;
+        protected override void Show()
+	    {
+            var task = Service.GetLogs(_request);
+            task.Wait();
 
-                    if (response.Length > 0)
-                        request.LastID = response.Max(x => x.ID);
-                    response = GroupDuplicatingLogs(response).OrderBy(l=>l.ID).ToArray();
+            ELog_[] response = task.Result;
 
-                    foreach (var log in response)
-                    {
-                        var instance = _sourceCache.GetInstance(log.InstanceID);
+            if (response.Length > 0)
+                _request.LastID = response.Max(x => x.ID);
+            response = GroupDuplicatingLogs(response).OrderBy(l => l.ID).ToArray();
 
-                        var instName = instance       .Name.Length <= _config.MaxInstanceLen ? instance.Name        : instance        .Name.Substring(0, _config.MaxInstanceLen - 2) + "..";
-                        var srcName  = instance.Source.Name.Length <= _config.MaxSourceLen   ? instance.Source.Name : instance.Source .Name.Substring(0, _config.MaxSourceLen   - 2) + "..";
+            foreach (var log in response)
+            {
+                var instance = SourceCache.GetInstance(log.InstanceID);
 
-                        var whenStr = log.Created.ToLocalTime().ToString(log.Doubled ? _config.DoubledTimeTemplate : _config.TimeTemplate);
+                var instName = Converter.Truncate(instance.Name, ConfigLog.MaxInstanceLen);
+                var srcName = Converter.Truncate(instance.Source.Name, ConfigLog.MaxSourceLen);
 
-                        var bodyStr = log.Body.Replace(Environment.NewLine, "");
+                var whenStr = log.Created.ToLocalTime().ToString(log.Doubled ? ConfigLog.DoubledTimeTemplate : ConfigCommon.TimeTemplate);
 
-                        var sev = (SeverityCutoffType)log.Severity;
-                        var level = (LevelType)log.Level;
+                var bodyStr = log.Body.Replace(Environment.NewLine, "");
 
-                        // TODO: support ShowLevelVerbose
+                var sev = (SeverityCutoffType)log.Severity;
+                var level = (LevelType)log.Level;
 
-                        var str = string.Format("{0} {1,-" + _config.MaxSourceLen + "} {2,-" + _config.MaxInstanceLen + "} {3} {4} | {5}",
-                            whenStr,
-                            srcName,
-                            instName,
-                            Converter.LevelTypeToString(level),
-                            Converter.SeverityToString(sev),
-                            bodyStr);
+                // TODO: support ShowLevelVerbose
 
-                        str = str.Length <= Console.WindowWidth ? str : str.Substring(0, Console.WindowWidth - 1);
+                var str = string.Format("{0} {1,-" + ConfigLog.MaxSourceLen + "} {2,-" + ConfigLog.MaxInstanceLen + "} {3} {4} | {5}",
+                    whenStr,
+                    srcName,
+                    instName,
+                    Converter.LevelTypeToString(level),
+                    Converter.SeverityToString(sev),
+                    bodyStr);
 
-                        Console.BackgroundColor = sev >= SeverityCutoffType.Info ? ConsoleColor.Black :
-                            sev == SeverityCutoffType.Warning ? ConsoleColor.DarkYellow : ConsoleColor.DarkRed;
+                str = str.Length <= Console.WindowWidth ? str : str.Substring(0, Console.WindowWidth - 1);
 
-                        Console.Write(str);
+                Console.BackgroundColor = sev >= SeverityCutoffType.Info ? ConsoleColor.Black :
+                    sev == SeverityCutoffType.Warning ? ConsoleColor.DarkYellow : ConsoleColor.DarkRed;
 
-                        Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write(str);
 
-                        Console.WriteLine();
-                    }
-                }
-                catch (Exception ex)
-				{
-					Console.WriteLine($"{DateTime.Now.ToString(_config.TimeTemplate)} INTERNAL ERROR: {ex.Message}");
-				}
+                Console.BackgroundColor = ConsoleColor.Black;
 
-				if (_config.Mode == TerminalMode.Single)
-					return;
-
-				Task.Delay(_config.RefreshPeriod * 1000).Wait();
-			}
-		}
+                Console.WriteLine();
+            }
+        }
 
 	    public IEnumerable<ELog_> GroupDuplicatingLogs(ELog_[] response)
         {
@@ -105,7 +88,7 @@ namespace MonikTerminal
                 var firstIn5Sec = g.GroupBy(r =>
                     {
                         var totalSeconds = (r.Created - min).TotalSeconds;
-                        var rez = totalSeconds - totalSeconds % _config.RefreshPeriod;
+                        var rez = totalSeconds - totalSeconds % ConfigCommon.RefreshPeriod;
 
                         return rez;
                     })
