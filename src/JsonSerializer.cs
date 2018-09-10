@@ -1,11 +1,12 @@
-﻿using MonikTerminal.Interfaces;
+﻿using MonikTerminal.Enums;
+using MonikTerminal.Interfaces;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MonikTerminal.Enums;
-using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace MonikTerminal
 {
@@ -27,8 +28,18 @@ namespace MonikTerminal
             Console.WriteLine("Config loaded");
         }
 
-        public void WriteNewMetricsToConfig()
+        public void WriteNewMetricsToConfig(string path)
         {
+            try
+            {
+                JsonConvert.DeserializeObject<MetricConfigArea[]>(_config.MetricsFill.Areas);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Wrong Areas template: {e.Message}");
+                return;
+            }
+
             var alreadyInConfig = new HashSet<long>(_config.Metrics.Metrics.Select(m => m.MetricId));
             var data = _cache.Metrics
                 .OrderBy(x => x.Instance.Source.Name)
@@ -55,9 +66,23 @@ namespace MonikTerminal
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            var json = JsonConvert.SerializeObject(metrics, settings);
-            File.WriteAllText("monikNew.json", json);
-            Console.WriteLine("New metrics are populated");
+            var jsonMetrics = JsonConvert.SerializeObject(metrics, settings);
+            jsonMetrics = jsonMetrics.Replace("\n", "\n    ");
+
+            const string autoFilledName = nameof(MetricsConfig.MetricsAutoFilled);
+            var autoFilledRegex = new Regex($@"(""{autoFilledName}"":)\s*\[((?<BR>\[)|(?<-BR>\])|[^\[\]]*)+\]");
+
+            var jsonConfig = File.ReadAllText(path);
+
+            if (autoFilledRegex.IsMatch(jsonConfig))
+            {
+                var result = autoFilledRegex.Replace(jsonConfig, $"$1 {jsonMetrics}");
+                File.WriteAllText(path, result);
+                Console.WriteLine($"New metrics are populated to field {autoFilledName} in {path}");
+            }
+            else
+                Console.WriteLine($"Could not find field {autoFilledName} in config");
         }
+
     } //end of class
 }

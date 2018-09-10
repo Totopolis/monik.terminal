@@ -104,7 +104,7 @@ namespace MonikTerminal
 
 			    if (fillMetrics.HasValue())
 			    {
-			        serializer.WriteNewMetricsToConfig();
+			        serializer.WriteNewMetricsToConfig(configPath);
 			    }
 
 				return 0;

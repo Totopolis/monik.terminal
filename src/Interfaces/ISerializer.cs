@@ -3,6 +3,6 @@ namespace MonikTerminal.Interfaces
     public interface ISerializer
     {
         void LoadConfig(string path);
-        void WriteNewMetricsToConfig();
+        void WriteNewMetricsToConfig(string path);
     }
 }

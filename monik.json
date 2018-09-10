@@ -31,7 +31,7 @@
   },
   "Metrics":
   {
-    "MaxMetricLen": 8,
+    "MaxMetricLen": 12,
     "MaxMetricValueLen": 8,
     "MaxAggregationTypeLen": 3,
     "DefaultValueFormat": "0.#",
@@ -54,6 +54,8 @@
           {"Range": [0.5, null], "Color": "DarkRed"}
         ]
       }
+    ],
+    "MetricsAutoFilled": [
     ]
   }
 }

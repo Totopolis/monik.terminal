@@ -31,6 +31,7 @@ namespace MonikTerminal
         public int MaxAggregationTypeLen { get; set; } = 3;
         public string DefaultValueFormat { get; set; } = "0.#";
         public MetricConfigValue[] Metrics { get; set; } = {};
+        public MetricConfigValue[] MetricsAutoFilled { get; set; } = {};
     }
 
     public class CommonConfig
