@@ -31,6 +31,13 @@ namespace MonikTerminal
                 Console.SetCursorPosition(0, 0);
         }
 
+        protected void WriteWithColor(string val, ConsoleColor color)
+        {
+            Console.BackgroundColor = color;
+            Console.Write(val);
+            Console.ResetColor();
+        }
+
         protected abstract void OnStart();
         protected abstract void Show();
 

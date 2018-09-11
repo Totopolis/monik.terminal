@@ -13,8 +13,6 @@ namespace MonikTerminal
 
         public static void Point(string[] args)
 		{
-			//Console.ForegroundColor = ConsoleColor.White;
-			Console.BackgroundColor = ConsoleColor.Black;
 			Console.OutputEncoding = Encoding.UTF8;
 
 			// Program.exe <-g|--greeting|-$ <greeting>> [name <fullname>]

@@ -29,7 +29,7 @@ namespace MonikTerminal
                 join window in windows on metric.ID equals window.MetricId
                 select new {metric, window, config};
 
-            SoftClear();
+            Console.Clear();
 
             var maxSourceInstanceLen = Console.WindowWidth - 1 -
                                        (ConfigMetrics.MaxMetricLen +
@@ -67,18 +67,23 @@ namespace MonikTerminal
                     if ((!a.HasValue || value >= a.Value) &&
                         (!b.HasValue || value < b.Value))
                     {
-                        Console.BackgroundColor =
-                            !string.IsNullOrEmpty(boundary.Color)
-                                ? Enum.Parse<ConsoleColor>(boundary.Color)
-                                : ConsoleColor.Black;
-
                         var valString = value.ToString(data.config.ValueFormat ?? ConfigMetrics.DefaultValueFormat);
                         valString = valString.Length <= ConfigMetrics.MaxMetricValueLen
                             ? valString
                             : valString.Substring(valString.Length - ConfigMetrics.MaxMetricValueLen);
-                        Console.Write($"{{0,{ConfigMetrics.MaxMetricValueLen}}}", valString);
 
-                        Console.BackgroundColor = ConsoleColor.Black;
+                        var valFormatted = string.Format($"{{0,{ConfigMetrics.MaxMetricValueLen}}}", valString);
+
+                        if (!string.IsNullOrEmpty(boundary.Color))
+                        {
+                            var color = Enum.Parse<ConsoleColor>(boundary.Color);
+                            WriteWithColor(valFormatted, color);
+                        }
+                        else
+                        {
+                            Console.Write(valFormatted);
+                        }
+
                         break;
                     }
                 }

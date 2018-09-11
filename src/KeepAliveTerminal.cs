@@ -53,15 +53,11 @@ namespace MonikTerminal
 
 	            if ((DateTime.Now - ka.Created.ToLocalTime()).TotalSeconds > ConfigKeepAlive.KeepAliveWarnSeconds)
 	            {
-	                Console.BackgroundColor = ConsoleColor.DarkRed;
-	                Console.Write("[ERROR]");
-	                Console.BackgroundColor = ConsoleColor.Black;
+                    WriteWithColor("[ERROR]", ConsoleColor.DarkRed);
 	            }
 	            else
 	            {
-	                Console.BackgroundColor = ConsoleColor.DarkGreen;
-	                Console.Write("[ OK  ]");
-	                Console.BackgroundColor = ConsoleColor.Black;
+	                WriteWithColor("[ OK  ]", ConsoleColor.DarkGreen);
 	            }
 
 	            Console.WriteLine(" | " + whenStr);

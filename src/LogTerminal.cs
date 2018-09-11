@@ -69,12 +69,15 @@ namespace MonikTerminal
 
                 str = str.Length <= Console.WindowWidth ? str : str.Substring(0, Console.WindowWidth - 1);
 
-                Console.BackgroundColor = sev >= SeverityCutoffType.Info ? ConsoleColor.Black :
-                    sev == SeverityCutoffType.Warning ? ConsoleColor.DarkYellow : ConsoleColor.DarkRed;
-
-                Console.Write(str);
-
-                Console.BackgroundColor = ConsoleColor.Black;
+                if (sev < SeverityCutoffType.Info)
+                {
+                    var color = sev == SeverityCutoffType.Warning ? ConsoleColor.DarkYellow : ConsoleColor.DarkRed;
+                    WriteWithColor(str, color);
+                }
+                else
+                {
+                    Console.Write(str);
+                }
 
                 Console.WriteLine();
             }
