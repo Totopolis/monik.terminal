@@ -31,10 +31,15 @@ namespace MonikTerminal
                 Console.SetCursorPosition(0, 0);
         }
 
-        protected void WriteWithColor(string val, ConsoleColor color)
+        protected void WriteWithColor(string val, ConsoleColor? color = null, ConsoleColor? fontColor = null)
         {
-            Console.BackgroundColor = color;
+            if (color.HasValue)
+                Console.BackgroundColor = color.Value;
+            if (fontColor.HasValue)
+                Console.ForegroundColor = fontColor.Value;
+
             Console.Write(val);
+
             Console.ResetColor();
         }
 

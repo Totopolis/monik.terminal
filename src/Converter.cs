@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MonikTerminal.Interfaces;
-using MonikTerminal.ModelsApp;
-using System.Threading.Tasks;
+﻿using MonikTerminal.Enums;
 using System;
-using MonikTerminal.ModelsApi;
-using System.Text;
-using MonikTerminal.Enums;
 
 namespace MonikTerminal
 {
     public class Converter
     {
+        public static ConsoleColor? StringToConsoleColor(string aStr)
+        {
+            return !string.IsNullOrEmpty(aStr)
+                ? Enum.Parse<ConsoleColor>(aStr)
+                : (ConsoleColor?) null;
+        }
+
         public static string LevelTypeToString(LevelType aType)
         {
             switch (aType)

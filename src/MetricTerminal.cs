@@ -74,15 +74,7 @@ namespace MonikTerminal
 
                         var valFormatted = string.Format($"{{0,{ConfigMetrics.MaxMetricValueLen}}}", valString);
 
-                        if (!string.IsNullOrEmpty(boundary.Color))
-                        {
-                            var color = Enum.Parse<ConsoleColor>(boundary.Color);
-                            WriteWithColor(valFormatted, color);
-                        }
-                        else
-                        {
-                            Console.Write(valFormatted);
-                        }
+                        WriteWithColor(valFormatted, boundary.Color, boundary.FontColor);
 
                         break;
                     }

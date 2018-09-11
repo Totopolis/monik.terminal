@@ -1,3 +1,4 @@
+using System;
 using MonikTerminal.Enums;
 using MonikTerminal.Interfaces;
 using Newtonsoft.Json;
@@ -13,7 +14,22 @@ namespace MonikTerminal
     public class MetricConfigArea
     {
         public double?[] Range { get; set; }
-        public string Color { get; set; }
+
+        [JsonIgnore] public ConsoleColor? Color { get; set; }
+        [JsonProperty("Color")]
+        public string TmpColor
+        {
+            get => Color?.ToString();
+            set => Color = Converter.StringToConsoleColor(value);
+        }
+
+        [JsonIgnore] public ConsoleColor? FontColor { get; set; }
+        [JsonProperty("FontColor")]
+        public string TmpFontColor
+        {
+            get => FontColor?.ToString();
+            set => FontColor = Converter.StringToConsoleColor(value);
+        }
     }
 
     public class MetricConfigValue
@@ -94,7 +110,7 @@ namespace MonikTerminal
         public string ValueFormatGauge { get; set; } = "0.#";
         public string Areas { get; set; } =
             @"[
-      {""Range"": [null, 0], ""Color"": ""DarkGreen""},
+      {""Range"": [null, 0], ""Color"": ""DarkGreen"", ""FontColor"": ""Black""},
       {""Range"": [0, 1], ""Color"": ""DarkYellow""},
       {""Range"": [1, null], ""Color"": ""DarkRed""}
     ]";
