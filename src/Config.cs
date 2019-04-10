@@ -1,7 +1,8 @@
-using System;
 using MonikTerminal.Enums;
 using MonikTerminal.Interfaces;
+using MonikTerminal.ModelsApi;
 using Newtonsoft.Json;
+using System;
 
 namespace MonikTerminal
 {
@@ -102,6 +103,8 @@ namespace MonikTerminal
         public int MaxInstanceLen { get; set; } = 8;
 
         public int KeepAliveWarnSeconds { get; set; } = 60;
+
+        public EKeepAliveRequest Request { get; set; } = new EKeepAliveRequest();
     }
 
     public class MetricsFillConfig

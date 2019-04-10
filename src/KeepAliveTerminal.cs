@@ -1,5 +1,4 @@
 ﻿using MonikTerminal.Interfaces;
-using MonikTerminal.ModelsApi;
 using System;
 using System.Linq;
 
@@ -7,8 +6,6 @@ namespace MonikTerminal
 {
     public class KeepAliveTerminal : BaseTerminal, IKeepAliveTerminal
 	{
-	    private EKeepAliveRequest _request;
-
 	    public KeepAliveTerminal(IMonikService aService, IConfig aConfig, ISourcesCache aSourceCache)
 	        : base(aService, aConfig, aSourceCache)
 	    {
@@ -18,17 +15,15 @@ namespace MonikTerminal
 
 	    protected override void OnStart()
 	    {
-	        _request = new EKeepAliveRequest();
-
 	        Console.Title = nameof(MonikTerminal) + ": " + nameof(KeepAliveTerminal);
         }
 
 	    protected override void Show()
 	    {
-	        var task = Service.GetKeepAlives(_request);
+	        var task = Service.GetKeepAlives(ConfigKeepAlive.Request);
 	        task.Wait();
 
-	        EKeepAlive_[] response = task.Result;
+	        var response = task.Result;
 	        response = response
 	            .OrderBy(x => SourceCache.GetInstance(x.InstanceID).Name)
 	            .ThenBy(x => SourceCache.GetInstance(x.InstanceID).Source.Name)

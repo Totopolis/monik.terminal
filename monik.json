@@ -20,6 +20,10 @@
     "MaxSourceLen": 12,
     "MaxInstanceLen": 8,
     "KeepAliveWarnSeconds": 60,
+    "Request": {
+      "Groups":[],
+      "Instances":[]
+    }
   },
   "MetricsFill":
   {
