@@ -70,6 +70,8 @@ namespace MonikTerminal
 
     public class LogConfig
     {
+        public string[] ExcludeKeywords { get; set; } = { };
+
         public string DoubledTimeTemplate { get; set; } = "HH:**";
 
         public int MaxSourceLen { get; set; } = 12;

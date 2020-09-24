@@ -14,6 +14,7 @@
     "SeverityCutoff": "info",
     "ShowLevelVerbose": true,
     "Top": 20,
+    "ExcludeKeywords": []
   },
   "KeepAlive":
   {

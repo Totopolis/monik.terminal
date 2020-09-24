@@ -41,7 +41,10 @@ namespace MonikTerminal
 
             if (response.Length > 0)
                 _request.LastID = response.Max(x => x.ID);
-            response = GroupDuplicatingLogs(response).OrderBy(l => l.ID).ToArray();
+
+            var filteredResponse = FilterExcludeKeywords(response);
+
+            response = GroupDuplicatingLogs(filteredResponse).OrderBy(l => l.ID).ToArray();
 
             foreach (var log in response)
             {
@@ -82,7 +85,7 @@ namespace MonikTerminal
             }
         }
 
-	    public IEnumerable<ELog_> GroupDuplicatingLogs(ELog_[] response)
+	    public IEnumerable<ELog_> GroupDuplicatingLogs(IEnumerable<ELog_> response)
         {
             var result = response?.GroupBy(r => new { r.InstanceID, r.Body, r.Severity, r.Level }).SelectMany(g =>
             {
@@ -106,5 +109,11 @@ namespace MonikTerminal
             });
             return result;
         }
+
+        public IEnumerable<ELog_> FilterExcludeKeywords(IEnumerable<ELog_> response)
+            => response.Where(x =>
+                !ConfigLog.ExcludeKeywords.Any(k =>
+                    x.Body.Contains(k, StringComparison.InvariantCultureIgnoreCase)));
+
     } //end of class
 }

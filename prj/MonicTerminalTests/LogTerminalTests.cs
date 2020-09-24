@@ -198,5 +198,21 @@ namespace MonicTerminalTests
             Assert.That(!rez[1].Doubled);
             Assert.That(!rez[2].Doubled);
         }
+
+        [Test]
+        public void ExcludeKeywordsTest()
+        {
+            config.Log.ExcludeKeywords = new[] {"excludeMe"};
+            var logs = new[]
+            {
+                new ELog_ {Body = "Hoho1"},
+                new ELog_ {Body = "HohoExClUdEmEHoHo"},
+                new ELog_ {Body = "Hoho2"},
+            };
+
+            var result = terminal.FilterExcludeKeywords(logs);
+
+            Assert.That(result, Is.EquivalentTo(new[] {logs[0], logs[2]}));
+        }
     }
 }
